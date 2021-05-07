@@ -15,7 +15,7 @@ public class SignUpService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    public AppUser signUp(AppUser appUser) throws AppUserExistsException {
+    public boolean signUp(AppUser appUser) throws AppUserExistsException {
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
 
         var existingUser = appUserRepository.findByUsername(appUser.getUsername());
@@ -24,7 +24,9 @@ public class SignUpService {
             throw new AppUserExistsException();
         }
 
-        return appUserRepository.save(appUser);
+        appUserRepository.save(appUser);
+
+        return true;
     }
 
 }

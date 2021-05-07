@@ -18,13 +18,12 @@ public class AppUserRESTController {
     private SignUpService signUpService;
 
     @PostMapping("/signUp")
-    public AppUser signUp(@RequestBody AppUserDto appUserDto) throws AppUserExistsException {
+    public boolean signUp(@RequestBody AppUserDto appUserDto) throws AppUserExistsException {
         var user = new AppUser();
         user.setFirstName(appUserDto.getFirstName());
         user.setLastName(appUserDto.getLastName());
         user.setPassword(appUserDto.getPassword());
         user.setUsername(appUserDto.getUsername());
-
         return signUpService.signUp(user);
     }
 }
