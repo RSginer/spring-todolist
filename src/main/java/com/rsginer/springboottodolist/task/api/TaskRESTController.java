@@ -17,7 +17,7 @@ public class TaskRESTController {
     @Autowired
     private TaskService taskService;
 
-    @GetMapping
+    @GetMapping("/")
     @ResponseBody
     public Page<Task> getTasks(@RequestParam(required = false) Pageable pageable) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
