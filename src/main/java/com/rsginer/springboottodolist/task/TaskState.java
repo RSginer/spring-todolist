@@ -1,4 +1,4 @@
-package com.rsginer.springboottodolist.domain.task;
+package com.rsginer.springboottodolist.task;
 
 public enum TaskState {
     FINISHED,

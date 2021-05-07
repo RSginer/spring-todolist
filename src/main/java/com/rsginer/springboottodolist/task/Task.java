@@ -1,9 +1,13 @@
-package com.rsginer.springboottodolist.domain.task;
+package com.rsginer.springboottodolist.task;
 
+import com.rsginer.springboottodolist.user.AppUser;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -16,6 +20,12 @@ public class Task {
     private String description;
 
     private TaskState state;
+
+    @ManyToOne
+    private AppUser createdBy;
+
+    @ManyToMany
+    private List<AppUser> responsible;
 
     public UUID getId() {
         return id;

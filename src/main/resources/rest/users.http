@@ -1,0 +1,10 @@
+### SignUp user
+POST http://localhost:8080/api/user/signUp
+Content-Type: application/json
+
+{
+  "username": "r.solerginer@gmail.com",
+  "password": "Mimacom",
+  "firstName": "Rubén",
+  "lastName": "Soler"
+}
