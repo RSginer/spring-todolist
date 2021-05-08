@@ -1,6 +1,6 @@
 package com.rsginer.springboottodolist.user.api;
 
-import com.rsginer.springboottodolist.user.AppUser;
+import com.rsginer.springboottodolist.user.dto.AppUserMapper;
 import com.rsginer.springboottodolist.user.dto.AppUserDto;
 import com.rsginer.springboottodolist.user.service.AppUserExistsException;
 import com.rsginer.springboottodolist.user.service.AppUserService;
@@ -19,11 +19,6 @@ public class AppUserRESTController {
 
     @PostMapping("/signUp")
     public boolean signUp(@RequestBody AppUserDto appUserDto) throws AppUserExistsException {
-        var user = new AppUser();
-        user.setFirstName(appUserDto.getFirstName());
-        user.setLastName(appUserDto.getLastName());
-        user.setPassword(appUserDto.getPassword());
-        user.setUsername(appUserDto.getUsername());
-        return appUserService.signUp(user);
+        return appUserService.signUp(new AppUserMapper().toEntity(appUserDto));
     }
 }
