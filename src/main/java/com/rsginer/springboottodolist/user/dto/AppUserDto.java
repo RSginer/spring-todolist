@@ -1,5 +1,8 @@
 package com.rsginer.springboottodolist.user.dto;
 
+import io.swagger.annotations.ApiModel;
+
+@ApiModel(value = "AppUser")
 public class AppUserDto {
     private String username;
     private String password;
