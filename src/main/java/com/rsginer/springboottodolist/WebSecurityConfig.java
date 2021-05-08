@@ -1,8 +1,10 @@
 package com.rsginer.springboottodolist;
 
+import com.rsginer.springboottodolist.user.security.AppUserAuthenticationProvider;
 import com.rsginer.springboottodolist.user.security.AppUserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,12 +27,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        var authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder());
-
-        return authProvider;
+    public AuthenticationProvider authenticationProvider() {
+        return new AppUserAuthenticationProvider();
     }
 
     @Override
