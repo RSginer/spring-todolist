@@ -47,7 +47,7 @@ public class TaskRESTController {
         return taskService.getTasks(currentUser, pageable).map(Task::toDto);
     }
 
-    @ApiOperation(value = "Create task and assign responsible if needed (Optional) by default current user is responsible")
+    @ApiOperation(value = "Create task and assign to users if needed (Optional) by default current user is assigned")
     @PostMapping("/create")
     @ResponseBody
     public TaskDto create(@RequestBody(required = true) CreateTaskDto createTask)  {

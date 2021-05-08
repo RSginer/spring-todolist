@@ -8,7 +8,7 @@ import java.util.UUID;
 @ApiModel(value = "CreateTask")
 public class CreateTaskDto {
     private String description;
-    private List<UUID> responsible;
+    private List<UUID> asignedTo;
 
     public String getDescription() {
         return description;
@@ -18,11 +18,11 @@ public class CreateTaskDto {
         this.description = description;
     }
 
-    public List<UUID> getResponsible() {
-        return responsible;
+    public List<UUID> getAsignedTo() {
+        return asignedTo;
     }
 
-    public void setResponsible(List<UUID> responsible) {
-        this.responsible = responsible;
+    public void setAsignedTo(List<UUID> asignedTo) {
+        this.asignedTo = asignedTo;
     }
 }

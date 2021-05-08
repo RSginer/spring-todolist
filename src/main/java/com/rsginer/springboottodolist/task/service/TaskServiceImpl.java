@@ -15,14 +15,14 @@ public class TaskServiceImpl implements TaskService {
     private TaskRepository taskRepository;
 
     public Page<Task> getTasks(AppUser user, Pageable pageable) {
-        return this.taskRepository.findByResponsible(user, pageable);
+        return this.taskRepository.findByAsignedTo(user, pageable);
     }
 
     public Task createTask(AppUser user, Task task) {
         task.setCreatedBy(user);
-        var responsible = task.getResponsible();
-        responsible.add(user);
-        task.setResponsible(responsible);
+        var asignedTo = task.getAsignedTo();
+        asignedTo.add(user);
+        task.setAsignedTo(asignedTo);
 
         return this.taskRepository.save(task);
     }

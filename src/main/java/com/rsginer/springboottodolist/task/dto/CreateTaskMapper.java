@@ -10,12 +10,12 @@ public class CreateTaskMapper {
         var task = new Task(appUser);
         task.setDescription(createTaskDto.getDescription());
 
-        if (createTaskDto.getResponsible() != null) {
-            var uuidResponsible = createTaskDto.getResponsible();
-            var responsible = uuidResponsible.stream().map(AppUser::new)
+        if (createTaskDto.getAsignedTo() != null) {
+            var uuidAsignedTo = createTaskDto.getAsignedTo();
+            var asignedTo = uuidAsignedTo.stream().map(AppUser::new)
                     .collect(Collectors.toList());
-            responsible.add(appUser);
-            task.setResponsible(responsible);
+            asignedTo.add(appUser);
+            task.setAsignedTo(asignedTo);
         }
 
         return task;
