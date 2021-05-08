@@ -4,11 +4,10 @@ import com.rsginer.springboottodolist.user.AppUser;
 import com.rsginer.springboottodolist.user.repository.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
 
-@Service
-public class SignUpService {
+import java.util.Optional;
 
+public class AppUserServiceImpl implements AppUserService{
     @Autowired
     private AppUserRepository appUserRepository;
 
@@ -29,4 +28,8 @@ public class SignUpService {
         return true;
     }
 
+    @Override
+    public AppUser findByUsername(String username) {
+        return this.appUserRepository.findByUsername(username);
+    }
 }

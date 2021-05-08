@@ -3,7 +3,7 @@ package com.rsginer.springboottodolist.user.api;
 import com.rsginer.springboottodolist.user.AppUser;
 import com.rsginer.springboottodolist.user.dto.AppUserDto;
 import com.rsginer.springboottodolist.user.service.AppUserExistsException;
-import com.rsginer.springboottodolist.user.service.SignUpService;
+import com.rsginer.springboottodolist.user.service.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AppUserRESTController {
 
     @Autowired
-    private SignUpService signUpService;
+    private AppUserService appUserService;
 
     @PostMapping("/signUp")
     public boolean signUp(@RequestBody AppUserDto appUserDto) throws AppUserExistsException {
@@ -24,6 +24,6 @@ public class AppUserRESTController {
         user.setLastName(appUserDto.getLastName());
         user.setPassword(appUserDto.getPassword());
         user.setUsername(appUserDto.getUsername());
-        return signUpService.signUp(user);
+        return appUserService.signUp(user);
     }
 }
