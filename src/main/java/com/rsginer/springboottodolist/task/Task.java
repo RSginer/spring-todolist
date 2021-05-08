@@ -21,7 +21,7 @@ public class Task {
     @NotBlank(message = "Description is required")
     private String description;
 
-    private TaskState state;
+    private TaskState state = TaskState.TODO;
 
     @ManyToOne
     private AppUser createdBy;
