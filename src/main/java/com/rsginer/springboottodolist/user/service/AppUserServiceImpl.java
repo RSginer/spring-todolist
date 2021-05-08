@@ -3,19 +3,18 @@ package com.rsginer.springboottodolist.user.service;
 import com.rsginer.springboottodolist.user.AppUser;
 import com.rsginer.springboottodolist.user.repository.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Optional;
 
 public class AppUserServiceImpl implements AppUserService{
     @Autowired
     private AppUserRepository appUserRepository;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     public boolean signUp(AppUser appUser) throws AppUserExistsException {
-        appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
+        appUser.setPassword(passwordEncoder.encode(appUser.getPassword().trim()));
 
         var existingUser = appUserRepository.findByUsername(appUser.getUsername());
 

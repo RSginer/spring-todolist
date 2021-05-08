@@ -1,4 +1,4 @@
-package com.rsginer.springboottodolist;
+package com.rsginer.springboottodolist.config;
 
 import com.rsginer.springboottodolist.task.service.TaskService;
 import com.rsginer.springboottodolist.task.service.TaskServiceImpl;
@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AppConfig {
-
     @Bean
     public TaskService taskService() {
         return new TaskServiceImpl();

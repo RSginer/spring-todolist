@@ -1,4 +1,4 @@
-package com.rsginer.springboottodolist.user.security;
+package com.rsginer.springboottodolist.security.auth;
 
 import com.rsginer.springboottodolist.user.service.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,24 +6,33 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-
-import java.util.ArrayList;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class AppUserAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     private AppUserService appUserService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         var username = authentication.getName();
-        var password = authentication.getCredentials().toString();
+        var rawPassword = authentication.getCredentials().toString().trim();
+        var user = appUserService.findByUsername(username);
 
-        return new UsernamePasswordAuthenticationToken(
-                new AppUserDetails(this.appUserService.findByUsername(username)),
-                password,
-                new ArrayList<>()
-        );
+
+        if (user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {
+            return new UsernamePasswordAuthenticationToken(
+                    user,
+                    user.getPassword(),
+                    AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_AUTHENTICATED")
+            );
+        }
+
+        return null;
     }
 
     @Override

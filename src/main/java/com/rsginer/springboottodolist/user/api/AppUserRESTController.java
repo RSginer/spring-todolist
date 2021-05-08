@@ -5,6 +5,7 @@ import com.rsginer.springboottodolist.user.dto.AppUserDto;
 import com.rsginer.springboottodolist.user.service.AppUserExistsException;
 import com.rsginer.springboottodolist.user.service.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

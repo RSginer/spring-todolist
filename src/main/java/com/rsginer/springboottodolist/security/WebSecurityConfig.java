@@ -1,9 +1,6 @@
-package com.rsginer.springboottodolist;
+package com.rsginer.springboottodolist.security;
 
-import com.rsginer.springboottodolist.task.service.TaskService;
-import com.rsginer.springboottodolist.task.service.TaskServiceImpl;
-import com.rsginer.springboottodolist.user.security.AppUserAuthenticationProvider;
-import com.rsginer.springboottodolist.user.security.AppUserDetailsServiceImpl;
+import com.rsginer.springboottodolist.security.auth.AppUserAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -12,19 +9,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        return new AppUserDetailsServiceImpl();
-    }
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -34,7 +26,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authenticationProvider());
     }
 
