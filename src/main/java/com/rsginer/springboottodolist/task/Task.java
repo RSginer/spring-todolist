@@ -1,5 +1,6 @@
 package com.rsginer.springboottodolist.task;
 
+import com.rsginer.springboottodolist.task.dto.TaskDto;
 import com.rsginer.springboottodolist.user.AppUser;
 import org.springframework.lang.Nullable;
 
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 public class Task {
@@ -79,5 +81,21 @@ public class Task {
 
     public void setState(TaskState state) {
         this.state = state;
+    }
+
+    public TaskDto toDto() {
+        var dto = new TaskDto();
+        dto.setId(this.getId());
+        dto.setResponsible(
+                this.getResponsible()
+                        .stream()
+                        .map(AppUser::toDto)
+                        .collect(Collectors.toList())
+        );
+        dto.setCreatedBy(this.getCreatedBy().toDto());
+        dto.setState(this.getState());
+        dto.setDescription(this.getDescription());
+
+        return dto;
     }
 }

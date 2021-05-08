@@ -3,6 +3,7 @@ package com.rsginer.springboottodolist.task.api;
 import com.rsginer.springboottodolist.task.Task;
 import com.rsginer.springboottodolist.task.dto.CreateTaskDto;
 import com.rsginer.springboottodolist.task.dto.CreateTaskMapper;
+import com.rsginer.springboottodolist.task.dto.TaskDto;
 import com.rsginer.springboottodolist.task.service.TaskService;
 import com.rsginer.springboottodolist.user.AppUser;
 import io.swagger.annotations.Api;
@@ -37,21 +38,21 @@ public class TaskRESTController {
     })
     @GetMapping
     @ResponseBody
-    public Page<Task> getTasks(@RequestParam(required = false) @ApiIgnore(
+    public Page<TaskDto> getTasks(@RequestParam(required = false) @ApiIgnore(
             "Ignored because swagger ui shows the wrong params, " +
                     "instead they are explained in the implicit params"
     ) Pageable pageable) {
         var currentUser = (AppUser) SecurityContextHolder.getContext().getAuthentication(). getPrincipal();
 
-        return taskService.getTasks(currentUser, pageable);
+        return taskService.getTasks(currentUser, pageable).map(Task::toDto);
     }
 
     @ApiOperation(value = "Create task and assign responsible if needed (Optional) by default current user is responsible")
     @PostMapping("/create")
     @ResponseBody
-    public Task create(@RequestBody(required = true) CreateTaskDto createTask)  {
+    public TaskDto create(@RequestBody(required = true) CreateTaskDto createTask)  {
         var currentUser = (AppUser) SecurityContextHolder.getContext().getAuthentication(). getPrincipal();
         var task = new CreateTaskMapper().toEntity(createTask, currentUser);
-        return this.taskService.createTask(currentUser, task);
+        return this.taskService.createTask(currentUser, task).toDto();
     }
 }
