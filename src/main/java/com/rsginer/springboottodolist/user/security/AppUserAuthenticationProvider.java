@@ -20,7 +20,7 @@ public class AppUserAuthenticationProvider implements AuthenticationProvider {
         var password = authentication.getCredentials().toString();
 
         return new UsernamePasswordAuthenticationToken(
-                this.appUserService.findByUsername(username),
+                new AppUserDetails(this.appUserService.findByUsername(username)),
                 password,
                 new ArrayList<>()
         );
