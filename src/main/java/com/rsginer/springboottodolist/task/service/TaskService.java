@@ -7,4 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface TaskService {
     Page<Task> getTasks(AppUser user, Pageable pageable);
+    Task createTask(AppUser user, Task task);
 }

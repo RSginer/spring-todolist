@@ -2,12 +2,23 @@ package com.rsginer.springboottodolist.user.dto;
 
 import io.swagger.annotations.ApiModel;
 
+import java.util.UUID;
+
 @ApiModel(value = "AppUser")
 public class AppUserDto {
+    private UUID id;
     private String username;
     private String password;
     private String firstName;
     private String lastName;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;

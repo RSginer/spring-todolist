@@ -1,5 +1,7 @@
 package com.rsginer.springboottodolist.user;
 
+import com.rsginer.springboottodolist.user.dto.AppUserDto;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,7 +11,7 @@ import java.util.UUID;
 public class AppUser {
 
     @Id
-    private final UUID id = UUID.randomUUID();
+    private UUID id;
 
     @Column(unique = true)
     private String username;
@@ -17,6 +19,22 @@ public class AppUser {
 
     private String firstName;
     private String lastName;
+
+    public AppUser() {
+        this.id = UUID.randomUUID();
+    }
+
+    public AppUser(UUID uuid) {
+        this.id = uuid;
+    }
+
+    public AppUser(String uuid) {
+        this.id = UUID.fromString(uuid);
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public UUID getId() {
         return id;
@@ -52,5 +70,16 @@ public class AppUser {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public AppUserDto toDto() {
+        var dto = new AppUserDto();
+        dto.setFirstName(this.getFirstName());
+        dto.setLastName(this.getLastName());
+        dto.setUsername(this.getUsername());
+        dto.setPassword("******");
+        dto.setId(this.getId());
+
+        return dto;
     }
 }

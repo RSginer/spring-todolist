@@ -13,7 +13,7 @@ public class AppUserServiceImpl implements AppUserService{
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public boolean signUp(AppUser appUser) throws AppUserExistsException {
+    public AppUser signUp(AppUser appUser) throws AppUserExistsException {
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword().trim()));
 
         var existingUser = appUserRepository.findByUsername(appUser.getUsername());
@@ -24,7 +24,7 @@ public class AppUserServiceImpl implements AppUserService{
 
         appUserRepository.save(appUser);
 
-        return true;
+        return appUser;
     }
 
     @Override

@@ -23,7 +23,6 @@ public class AppUserAuthenticationProvider implements AuthenticationProvider {
         var rawPassword = authentication.getCredentials().toString().trim();
         var user = appUserService.findByUsername(username);
 
-
         if (user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {
             return new UsernamePasswordAuthenticationToken(
                     user,

@@ -24,7 +24,7 @@ public class AppUserRESTController {
 
     @ApiOperation(value = "Register new user")
     @PostMapping("/signUp")
-    public boolean signUp(@RequestBody AppUserDto appUserDto) throws AppUserExistsException {
-        return appUserService.signUp(new AppUserMapper().toEntity(appUserDto));
+    public AppUserDto signUp(@RequestBody AppUserDto appUser) throws AppUserExistsException {
+        return appUserService.signUp(new AppUserMapper().toEntity(appUser)).toDto();
     }
 }

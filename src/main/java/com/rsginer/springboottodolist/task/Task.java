@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,9 +16,9 @@ import java.util.UUID;
 public class Task {
 
     @Id
-    private final UUID id = UUID.randomUUID();
+    private UUID id;
 
-    @Nullable
+    @NotBlank(message = "Description is required")
     private String description;
 
     private TaskState state;
@@ -27,8 +29,39 @@ public class Task {
     @ManyToMany
     private List<AppUser> responsible;
 
+    public Task() {
+        this.id = UUID.randomUUID();
+        this.responsible = new ArrayList<>();
+    }
+
+    public Task(AppUser createdBy) {
+        this.id = UUID.randomUUID();
+        this.createdBy = createdBy;
+        this.responsible = new ArrayList<>();
+    }
+
     public UUID getId() {
         return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public AppUser getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(AppUser createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public List<AppUser> getResponsible() {
+        return responsible;
+    }
+
+    public void setResponsible(List<AppUser> responsible) {
+        this.responsible = responsible;
     }
 
     @Nullable
