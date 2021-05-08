@@ -1,3 +1,4 @@
+## Get user tasks
 GET http://localhost:8080/api/tasks
 Content-Type: application/json
 Authorization: Basic ci5zb2xlcmdpbmVyQGdtYWlsLmNvbTpNaW1hY29tCg==
