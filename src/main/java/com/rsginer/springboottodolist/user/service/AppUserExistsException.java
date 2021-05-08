@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT)
 public class AppUserExistsException extends Exception {
-    public AppUserExistsException() {
-        super("User already exist");
+    public AppUserExistsException(String username) {
+        super("User " + username + " already exist");
     }
 }

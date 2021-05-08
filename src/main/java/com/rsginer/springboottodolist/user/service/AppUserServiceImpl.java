@@ -20,7 +20,7 @@ public class AppUserServiceImpl implements AppUserService{
         var existingUser = appUserRepository.findByUsername(appUser.getUsername());
 
         if (existingUser != null) {
-            throw new AppUserExistsException();
+            throw new AppUserExistsException(existingUser.getUsername());
         }
 
         appUserRepository.save(appUser);

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/tasks")
 public class TaskRESTController {
 
-
     @Autowired
     private TaskService taskService;
 
