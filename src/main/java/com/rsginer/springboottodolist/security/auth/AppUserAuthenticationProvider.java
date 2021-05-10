@@ -1,7 +1,5 @@
 package com.rsginer.springboottodolist.security.auth;
 
-import com.rsginer.springboottodolist.user.service.AppUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,6 +18,7 @@ public class AppUserAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         var username = authentication.getName();
         var rawPassword = authentication.getCredentials().toString().trim();
+
         var user = userDetailsService.loadUserByUsername(username);
         if (user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {
             return new UsernamePasswordAuthenticationToken(

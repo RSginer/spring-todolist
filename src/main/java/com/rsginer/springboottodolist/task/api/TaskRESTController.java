@@ -6,7 +6,6 @@ import com.rsginer.springboottodolist.task.dto.CreateTaskDto;
 import com.rsginer.springboottodolist.task.dto.CreateTaskMapper;
 import com.rsginer.springboottodolist.task.dto.TaskDto;
 import com.rsginer.springboottodolist.task.service.TaskService;
-import com.rsginer.springboottodolist.user.AppUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -19,10 +18,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.security.Principal;
+
 @Api(value = "Tasks", tags = "Tasks")
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskRESTController {
+
+
 
     @Autowired
     private TaskService taskService;
@@ -40,10 +43,8 @@ public class TaskRESTController {
     })
     @GetMapping
     @ResponseBody
-    public Page<TaskDto> getTasks(@RequestParam(required = false) @ApiIgnore(
-            "Ignored because swagger ui shows the wrong params, " +
-                    "instead they are explained in the implicit params"
-    ) Pageable pageable, @ApiIgnore @AuthenticationPrincipal AppUserDetails appUserDetails) {
+    public Page<TaskDto> getTasks(@RequestParam(required = false) @ApiIgnore Pageable pageable, @ApiIgnore @AuthenticationPrincipal AppUserDetails appUserDetails) {
+
         return taskService.getTasks(appUserDetails.getUser(), pageable).map(Task::toDto);
     }
 
