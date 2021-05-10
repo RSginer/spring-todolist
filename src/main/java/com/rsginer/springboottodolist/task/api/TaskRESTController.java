@@ -1,5 +1,6 @@
 package com.rsginer.springboottodolist.task.api;
 
+import com.rsginer.springboottodolist.security.auth.AppUserDetails;
 import com.rsginer.springboottodolist.task.Task;
 import com.rsginer.springboottodolist.task.dto.CreateTaskDto;
 import com.rsginer.springboottodolist.task.dto.CreateTaskMapper;
@@ -13,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -41,18 +43,17 @@ public class TaskRESTController {
     public Page<TaskDto> getTasks(@RequestParam(required = false) @ApiIgnore(
             "Ignored because swagger ui shows the wrong params, " +
                     "instead they are explained in the implicit params"
-    ) Pageable pageable) {
-        var currentUser = (AppUser) SecurityContextHolder.getContext().getAuthentication(). getPrincipal();
-
-        return taskService.getTasks(currentUser, pageable).map(Task::toDto);
+    ) Pageable pageable, @ApiIgnore @AuthenticationPrincipal AppUserDetails appUserDetails) {
+        return taskService.getTasks(appUserDetails.getUser(), pageable).map(Task::toDto);
     }
 
     @ApiOperation(value = "Create task and assign to users if needed (Optional) by default current user is assigned")
     @PostMapping("/create")
     @ResponseBody
-    public TaskDto create(@RequestBody(required = true) CreateTaskDto createTask)  {
-        var currentUser = (AppUser) SecurityContextHolder.getContext().getAuthentication(). getPrincipal();
-        var task = new CreateTaskMapper().toEntity(createTask, currentUser);
-        return this.taskService.createTask(currentUser, task).toDto();
+    public TaskDto create(@RequestBody(required = true) CreateTaskDto createTask,
+                          @ApiIgnore @AuthenticationPrincipal AppUserDetails appUserDetails)  {
+        System.out.println(SecurityContextHolder.getContext().getAuthentication(). getPrincipal());
+        var task = new CreateTaskMapper().toEntity(createTask, appUserDetails.getUser());
+        return this.taskService.createTask(appUserDetails.getUser(), task).toDto();
     }
 }

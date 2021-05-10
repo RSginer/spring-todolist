@@ -7,22 +7,20 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class AppUserAuthenticationProvider implements AuthenticationProvider {
 
-    @Autowired
-    private AppUserService appUserService;
+    private UserDetailsService userDetailsService;
 
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         var username = authentication.getName();
         var rawPassword = authentication.getCredentials().toString().trim();
-        var user = appUserService.findByUsername(username);
-
+        var user = userDetailsService.loadUserByUsername(username);
         if (user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {
             return new UsernamePasswordAuthenticationToken(
                     user,
@@ -32,6 +30,14 @@ public class AppUserAuthenticationProvider implements AuthenticationProvider {
         }
 
         return null;
+    }
+
+    public void setUserDetailsService (UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override

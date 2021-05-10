@@ -3,6 +3,5 @@ package com.rsginer.springboottodolist.task;
 public enum TaskState {
     FINISHED,
     TODO,
-    IN_PROGRESS,
-    DELETED
+    IN_PROGRESS
 }
