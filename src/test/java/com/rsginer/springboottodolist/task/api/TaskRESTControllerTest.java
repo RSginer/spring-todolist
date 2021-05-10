@@ -26,7 +26,7 @@ public class TaskRESTControllerTest {
 
     @Test
     public void shouldReturnForbiddenGettingTaskWithoutCredentials() throws Exception {
-        this.mockMvc.perform(get("/api/task"))
+        this.mockMvc.perform(get("/api/tasks"))
                 .andDo(print())
                 .andExpect(status()
                         .isUnauthorized());
