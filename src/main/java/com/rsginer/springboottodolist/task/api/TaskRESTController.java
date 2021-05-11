@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@Tag(name = "Tasks")
+@Tag(name = "Task")
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskRESTController {
