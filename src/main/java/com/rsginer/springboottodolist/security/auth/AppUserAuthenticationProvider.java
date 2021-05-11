@@ -18,8 +18,8 @@ public class AppUserAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         var username = authentication.getName();
         var rawPassword = authentication.getCredentials().toString().trim();
-
         var user = userDetailsService.loadUserByUsername(username);
+
         if (user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {
             return new UsernamePasswordAuthenticationToken(
                     user,

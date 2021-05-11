@@ -13,20 +13,15 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-
-import java.security.Principal;
 
 @Api(value = "Tasks", tags = "Tasks")
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskRESTController {
-
-
-
     @Autowired
     private TaskService taskService;
 
@@ -44,8 +39,13 @@ public class TaskRESTController {
     @GetMapping
     @ResponseBody
     public Page<TaskDto> getTasks(@RequestParam(required = false) @ApiIgnore Pageable pageable, @ApiIgnore @AuthenticationPrincipal AppUserDetails appUserDetails) {
+        System.out.println(appUserDetails);
+        System.out.println(pageable);
+        var page = taskService.getTasks(appUserDetails.getUser(), pageable);
 
-        return taskService.getTasks(appUserDetails.getUser(), pageable).map(Task::toDto);
+        return page.map(Task::toDto);
+
+        // return taskService.getTasks(appUserDetails.getUser(), pageable).map(Task::toDto);
     }
 
     @ApiOperation(value = "Create task and assign to users if needed (Optional) by default current user is assigned")
@@ -53,7 +53,6 @@ public class TaskRESTController {
     @ResponseBody
     public TaskDto create(@RequestBody(required = true) CreateTaskDto createTask,
                           @ApiIgnore @AuthenticationPrincipal AppUserDetails appUserDetails)  {
-        System.out.println(SecurityContextHolder.getContext().getAuthentication(). getPrincipal());
         var task = new CreateTaskMapper().toEntity(createTask, appUserDetails.getUser());
         return this.taskService.createTask(appUserDetails.getUser(), task).toDto();
     }
