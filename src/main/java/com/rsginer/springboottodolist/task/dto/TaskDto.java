@@ -2,12 +2,12 @@ package com.rsginer.springboottodolist.task.dto;
 
 import com.rsginer.springboottodolist.task.domain.TaskState;
 import com.rsginer.springboottodolist.user.dto.AppUserDto;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 import java.util.UUID;
 
-@ApiModel(value = "Task")
+@Schema(name = "Task")
 public class TaskDto {
     private UUID id;
     private String description;

@@ -1,3 +1,3 @@
 ## Spring Boot Todo-List
 
-* Api Docs: http://localhost:8080/swagger-ui/
+* API Docs -> [Swagger UI](http://localhost:8080/swagger-ui/index.html?configUrl=/api-docs/swagger-config)

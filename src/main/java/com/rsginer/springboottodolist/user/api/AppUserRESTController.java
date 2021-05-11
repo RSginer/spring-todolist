@@ -4,15 +4,15 @@ import com.rsginer.springboottodolist.user.mapper.AppUserMapper;
 import com.rsginer.springboottodolist.user.dto.AppUserDto;
 import com.rsginer.springboottodolist.user.service.AppUserExistsException;
 import com.rsginer.springboottodolist.user.service.AppUserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(value = "User", tags = "User")
+@Tag(name = "User")
 @RestController
 @RequestMapping("/api/user")
 public class AppUserRESTController {
@@ -21,7 +21,7 @@ public class AppUserRESTController {
     private AppUserService appUserService;
 
 
-    @ApiOperation(value = "Register new user")
+    @Operation(description = "Register new user")
     @PostMapping("/signUp")
     public AppUserDto signUp(@RequestBody AppUserDto appUser) throws AppUserExistsException {
         return appUserService.signUp(new AppUserMapper().toEntity(appUser)).toDto();

@@ -1,11 +1,12 @@
 package com.rsginer.springboottodolist.task.dto;
 
-import io.swagger.annotations.ApiModel;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 import java.util.UUID;
 
-@ApiModel(value = "CreateTask")
+@Schema(name = "CreateTask")
 public class CreateTaskDto {
     private String description;
     private List<UUID> asignedTo;
