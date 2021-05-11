@@ -5,6 +5,7 @@ import com.rsginer.springboottodolist.task.domain.Task;
 import com.rsginer.springboottodolist.task.dto.CreateTaskDto;
 import com.rsginer.springboottodolist.task.mapper.CreateTaskMapper;
 import com.rsginer.springboottodolist.task.dto.TaskDto;
+import com.rsginer.springboottodolist.task.service.TaskNotFoundException;
 import com.rsginer.springboottodolist.task.service.TaskService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @Tag(name = "Tasks")
 @RestController
 @RequestMapping("/api/tasks")
@@ -32,6 +35,14 @@ public class TaskRESTController {
     @PageableAsQueryParam
     public Page<TaskDto> getTasks(@RequestParam(required = false) @Parameter(hidden = false) Pageable pageable, @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails) {
         return taskService.getTasks(appUserDetails.getUser(), pageable).map(Task::toDto);
+    }
+
+    @GetMapping("/{taskId}")
+    @ResponseBody
+    @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Get tasks for current user")
+    @PageableAsQueryParam
+    public TaskDto getTaskById(@PathVariable @Parameter(hidden = false) UUID taskId, @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails) throws TaskNotFoundException {
+        return taskService.getById(appUserDetails.getUser(), taskId).orElseThrow(() -> new TaskNotFoundException(taskId)).toDto();
     }
 
     @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Create task and assign to user, by default current user is assigned")

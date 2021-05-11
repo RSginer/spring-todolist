@@ -13,7 +13,7 @@ public class TaskDto {
     private String description;
     private TaskState state;
     private AppUserDto createdBy;
-    private List<AppUserDto> asignedTo;
+    private List<AppUserDto> assignedTo;
 
     public UUID getId() {
         return id;
@@ -47,11 +47,11 @@ public class TaskDto {
         this.createdBy = createdBy;
     }
 
-    public List<AppUserDto> getAsignedTo() {
-        return asignedTo;
+    public List<AppUserDto> getAssignedTo() {
+        return assignedTo;
     }
 
-    public void setAsignedTo(List<AppUserDto> asignedTo) {
-        this.asignedTo = asignedTo;
+    public void setAssignedTo(List<AppUserDto> assignedTo) {
+        this.assignedTo = assignedTo;
     }
 }

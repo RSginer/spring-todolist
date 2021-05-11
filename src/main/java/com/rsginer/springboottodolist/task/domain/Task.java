@@ -86,7 +86,7 @@ public class Task {
     public TaskDto toDto() {
         var dto = new TaskDto();
         dto.setId(this.getId());
-        dto.setAsignedTo(
+        dto.setAssignedTo(
                 this.getAssignedTo()
                         .stream()
                         .map(AppUser::toDto)

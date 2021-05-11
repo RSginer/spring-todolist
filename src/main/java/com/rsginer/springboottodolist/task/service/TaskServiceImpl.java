@@ -8,6 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 public class TaskServiceImpl implements TaskService {
 
@@ -25,5 +28,9 @@ public class TaskServiceImpl implements TaskService {
         task.setAssignedTo(assignedTo);
 
         return this.taskRepository.save(task);
+    }
+
+    public Optional<Task> getById(AppUser user, UUID taskId) {
+        return taskRepository.getTaskByIdAndCreatedByOrAssignedTo(taskId, user);
     }
 }

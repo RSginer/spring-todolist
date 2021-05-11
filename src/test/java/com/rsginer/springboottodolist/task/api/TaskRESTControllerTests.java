@@ -6,6 +6,7 @@ import com.rsginer.springboottodolist.security.WithMockAppUser;
 import com.rsginer.springboottodolist.auth.domain.AppUserDetails;
 import com.rsginer.springboottodolist.task.domain.Task;
 import com.rsginer.springboottodolist.task.dto.CreateTaskDto;
+import com.rsginer.springboottodolist.task.service.TaskNotFoundException;
 import com.rsginer.springboottodolist.task.service.TaskService;
 import com.rsginer.springboottodolist.user.domain.AppUser;
 import org.junit.Test;
@@ -23,6 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -125,6 +128,50 @@ public class TaskRESTControllerTests extends MockSecurityRESTController {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.createdBy.username").value(user.getUsername()))
                 .andExpect(jsonPath("$.description").value(task.getDescription()));
+    }
+
+    @Test
+    @WithMockAppUser
+    public void shouldReturnTaskByIdForGivenUser() throws Exception {
+        var userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var user = userDetails.getUser();
+
+        Task task = new Task();
+        task.setCreatedBy(user);
+        task.setAssignedTo(Collections.singletonList(user));
+        task.setDescription("Test 2");
+
+        when(taskService.getById(any(AppUser.class), any(UUID.class))).thenReturn(Optional.of(task));
+
+        this.mockMvc.perform(get("/api/tasks/" + task.getId().toString()))
+                .andDo(print())
+                .andExpect(status()
+                        .isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.createdBy.username").value(user.getUsername()))
+                .andExpect(jsonPath("$.assignedTo[0].username").value(user.getUsername()))
+                .andExpect(jsonPath("$.description").value(task.getDescription()))
+                .andExpect(jsonPath("$.id").value(task.getId().toString()));
+
+        verify(taskService).getById(user, task.getId());
+    }
+
+    @Test
+    @WithMockAppUser
+    public void shouldThrowTaskNotFoundException() throws Exception {
+        var userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var user = userDetails.getUser();
+
+        Task task = new Task();
+
+        when(taskService.getById(any(AppUser.class), any(UUID.class))).thenReturn(Optional.empty());
+
+        this.mockMvc.perform(get("/api/tasks/" + task.getId().toString()))
+                .andDo(print())
+                .andExpect(status()
+                        .isNotFound());
+
+        verify(taskService).getById(user, task.getId());
     }
 
 }

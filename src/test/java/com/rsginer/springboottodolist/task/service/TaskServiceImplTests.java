@@ -10,9 +10,7 @@ import org.mockito.Mock;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -86,6 +84,30 @@ public class TaskServiceImplTests {
         assertThat(page.toList().get(1).getAssignedTo().indexOf(user)).isNotNegative();
 
         verify(taskRepository).findByAssignedTo(user, null);
+    }
+
+    @Test
+    public void shouldReturnTaskByIdForGivenUser() {
+        var user = new AppUser();
+        user.setUsername("test@test.com");
+        user.setPassword("Test");
+        user.setFirstName("Test");
+        user.setLastName("Test");
+
+        Task task = new Task();
+        task.setCreatedBy(user);
+        task.setAssignedTo(Collections.singletonList(user));
+        task.setDescription("Test 1");
+
+        when(taskRepository.getTaskByIdAndCreatedByOrAssignedTo(eq(task.getId()), any(AppUser.class)))
+                .thenReturn(Optional.of(task));
+
+        var foundTask = taskService.getById(user, task.getId());
+
+        assertThat(foundTask).isPresent();
+        assertThat(foundTask.get().getId()).isSameAs(task.getId());
+        assertThat(foundTask.get().getAssignedTo().get(0).getId()).isSameAs(user.getId());
+        verify(taskRepository).getTaskByIdAndCreatedByOrAssignedTo(task.getId(), user);
     }
 
 }
