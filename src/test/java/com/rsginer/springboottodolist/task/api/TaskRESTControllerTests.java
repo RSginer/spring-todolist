@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(TaskRESTController.class)
 @EnableSpringDataWebSupport
-public class TaskRESTControllerTest extends MockSecurityRESTController {
+public class TaskRESTControllerTests extends MockSecurityRESTController {
     @Autowired
     private MockMvc mockMvc;
 

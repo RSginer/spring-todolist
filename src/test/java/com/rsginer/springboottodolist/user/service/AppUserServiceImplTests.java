@@ -14,7 +14,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-public class AppUserServiceImplTest {
+public class AppUserServiceImplTests {
 
     @Mock
     AppUserRepository appUserRepository;
