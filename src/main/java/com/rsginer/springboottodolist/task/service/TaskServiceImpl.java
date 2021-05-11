@@ -15,7 +15,6 @@ public class TaskServiceImpl implements TaskService {
     private TaskRepository taskRepository;
 
     public Page<Task> getTasks(AppUser user, Pageable pageable) {
-        System.out.println(this.taskRepository);
         return this.taskRepository.findByAsignedTo(user, pageable);
     }
 
