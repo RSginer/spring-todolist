@@ -2,10 +2,10 @@ package com.rsginer.springboottodolist.task.api;
 
 import com.rsginer.springboottodolist.security.MockSecurityRESTController;
 import com.rsginer.springboottodolist.security.WithMockAppUser;
-import com.rsginer.springboottodolist.security.auth.AppUserDetails;
-import com.rsginer.springboottodolist.task.Task;
+import com.rsginer.springboottodolist.auth.domain.AppUserDetails;
+import com.rsginer.springboottodolist.task.domain.Task;
 import com.rsginer.springboottodolist.task.service.TaskService;
-import com.rsginer.springboottodolist.user.AppUser;
+import com.rsginer.springboottodolist.user.domain.AppUser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

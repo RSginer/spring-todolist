@@ -1,7 +1,7 @@
 package com.rsginer.springboottodolist.task.repository;
 
-import com.rsginer.springboottodolist.task.Task;
-import com.rsginer.springboottodolist.user.AppUser;
+import com.rsginer.springboottodolist.task.domain.Task;
+import com.rsginer.springboottodolist.user.domain.AppUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

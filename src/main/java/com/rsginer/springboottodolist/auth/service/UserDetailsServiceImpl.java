@@ -1,5 +1,6 @@
-package com.rsginer.springboottodolist.security.auth;
+package com.rsginer.springboottodolist.auth.service;
 
+import com.rsginer.springboottodolist.auth.domain.AppUserDetails;
 import com.rsginer.springboottodolist.user.service.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

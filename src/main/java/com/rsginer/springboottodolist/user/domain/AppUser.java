@@ -1,4 +1,4 @@
-package com.rsginer.springboottodolist.user;
+package com.rsginer.springboottodolist.user.domain;
 
 import com.rsginer.springboottodolist.user.dto.AppUserDto;
 

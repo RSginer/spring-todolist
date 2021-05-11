@@ -1,7 +1,7 @@
-package com.rsginer.springboottodolist.task;
+package com.rsginer.springboottodolist.task.domain;
 
 import com.rsginer.springboottodolist.task.dto.TaskDto;
-import com.rsginer.springboottodolist.user.AppUser;
+import com.rsginer.springboottodolist.user.domain.AppUser;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;

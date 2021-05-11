@@ -1,7 +1,7 @@
 package com.rsginer.springboottodolist.security;
 
-import com.rsginer.springboottodolist.security.auth.AppUserDetails;
-import com.rsginer.springboottodolist.user.AppUser;
+import com.rsginer.springboottodolist.auth.domain.AppUserDetails;
+import com.rsginer.springboottodolist.user.domain.AppUser;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;

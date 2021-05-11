@@ -1,8 +1,7 @@
-package com.rsginer.springboottodolist.security;
+package com.rsginer.springboottodolist.config;
 
-import com.rsginer.springboottodolist.security.auth.AppUserAuthenticationProvider;
-import com.rsginer.springboottodolist.security.auth.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.rsginer.springboottodolist.auth.service.AppUserAuthenticationProvider;
+import com.rsginer.springboottodolist.auth.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;

@@ -1,6 +1,6 @@
-package com.rsginer.springboottodolist.security.auth;
+package com.rsginer.springboottodolist.auth.domain;
 
-import com.rsginer.springboottodolist.user.AppUser;
+import com.rsginer.springboottodolist.user.domain.AppUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

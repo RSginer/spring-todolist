@@ -1,6 +1,6 @@
 package com.rsginer.springboottodolist.task.dto;
 
-import com.rsginer.springboottodolist.task.TaskState;
+import com.rsginer.springboottodolist.task.domain.TaskState;
 import com.rsginer.springboottodolist.user.dto.AppUserDto;
 import io.swagger.annotations.ApiModel;
 

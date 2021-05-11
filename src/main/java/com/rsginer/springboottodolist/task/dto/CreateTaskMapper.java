@@ -1,7 +1,7 @@
 package com.rsginer.springboottodolist.task.dto;
 
-import com.rsginer.springboottodolist.task.Task;
-import com.rsginer.springboottodolist.user.AppUser;
+import com.rsginer.springboottodolist.task.domain.Task;
+import com.rsginer.springboottodolist.user.domain.AppUser;
 
 import java.util.stream.Collectors;
 

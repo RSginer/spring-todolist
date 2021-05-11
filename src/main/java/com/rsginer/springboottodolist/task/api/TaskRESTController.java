@@ -1,7 +1,7 @@
 package com.rsginer.springboottodolist.task.api;
 
-import com.rsginer.springboottodolist.security.auth.AppUserDetails;
-import com.rsginer.springboottodolist.task.Task;
+import com.rsginer.springboottodolist.auth.domain.AppUserDetails;
+import com.rsginer.springboottodolist.task.domain.Task;
 import com.rsginer.springboottodolist.task.dto.CreateTaskDto;
 import com.rsginer.springboottodolist.task.dto.CreateTaskMapper;
 import com.rsginer.springboottodolist.task.dto.TaskDto;
