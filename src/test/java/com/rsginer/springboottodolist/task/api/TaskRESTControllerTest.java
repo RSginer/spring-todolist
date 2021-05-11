@@ -1,9 +1,12 @@
 package com.rsginer.springboottodolist.task.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rsginer.springboottodolist.security.MockSecurityRESTController;
 import com.rsginer.springboottodolist.security.WithMockAppUser;
 import com.rsginer.springboottodolist.auth.domain.AppUserDetails;
 import com.rsginer.springboottodolist.task.domain.Task;
+import com.rsginer.springboottodolist.task.dto.CreateTaskDto;
 import com.rsginer.springboottodolist.task.service.TaskService;
 import com.rsginer.springboottodolist.user.domain.AppUser;
 import org.junit.Test;
@@ -21,9 +24,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -34,11 +39,14 @@ public class TaskRESTControllerTest extends MockSecurityRESTController {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @MockBean
     private TaskService taskService;
 
     @Test
-    public void shouldReturnForbiddenGettingTaskWithoutCredentials() throws Exception {
+    public void shouldReturnUnauthorizedGettingTaskWithoutCredentials() throws Exception {
         this.mockMvc.perform(get("/api/tasks"))
                 .andDo(print())
                 .andExpect(status()
@@ -77,6 +85,48 @@ public class TaskRESTControllerTest extends MockSecurityRESTController {
                         .value(task2.getDescription()));
 
         verify(taskService).getTasks(user, null);
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedCreateTaskWithoutCredentials() throws Exception {
+        var task = new Task();
+        task.setDescription("Test");
+
+        when(taskService.createTask(any(AppUser.class), any(Task.class))).thenReturn(task);
+
+        this.mockMvc.perform(
+                post("/api/tasks/create")
+                        .content(objectMapper.writeValueAsString(task))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockAppUser
+    public void shouldCreateATask() throws Exception {
+        var userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var user = userDetails.getUser();
+
+        Task task = new Task();
+        task.setDescription("Test 1");
+        task.setCreatedBy(user);
+        task.setAsignedTo(Collections.singletonList(user));
+
+        var createTaskDto = new CreateTaskDto();
+        createTaskDto.setDescription(task.getDescription());
+        createTaskDto.setAsignedTo(task.getAsignedTo().stream().map(AppUser::getId).collect(Collectors.toList()));
+
+        when(taskService.createTask(any(AppUser.class), any(Task.class))).thenReturn(task);
+
+        this.mockMvc.perform(
+                post("/api/tasks/create")
+                        .content(objectMapper.writeValueAsString(createTaskDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.createdBy.username").value(user.getUsername()))
+                .andExpect(jsonPath("$.description").value(task.getDescription()));
     }
 
 }
