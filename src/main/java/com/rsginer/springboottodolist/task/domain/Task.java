@@ -29,17 +29,17 @@ public class Task {
     private AppUser createdBy;
 
     @ManyToMany
-    private List<AppUser> asignedTo;
+    private List<AppUser> assignedTo;
 
     public Task() {
         this.id = UUID.randomUUID();
-        this.asignedTo = new ArrayList<>();
+        this.assignedTo = new ArrayList<>();
     }
 
     public Task(AppUser createdBy) {
         this.id = UUID.randomUUID();
         this.createdBy = createdBy;
-        this.asignedTo = new ArrayList<>();
+        this.assignedTo = new ArrayList<>();
     }
 
     public UUID getId() {
@@ -58,12 +58,12 @@ public class Task {
         this.createdBy = createdBy;
     }
 
-    public List<AppUser> getAsignedTo() {
-        return asignedTo;
+    public List<AppUser> getAssignedTo() {
+        return assignedTo;
     }
 
-    public void setAsignedTo(List<AppUser> asignedTo) {
-        this.asignedTo = asignedTo;
+    public void setAssignedTo(List<AppUser> asignedTo) {
+        this.assignedTo = asignedTo;
     }
 
     @Nullable
@@ -87,7 +87,7 @@ public class Task {
         var dto = new TaskDto();
         dto.setId(this.getId());
         dto.setAsignedTo(
-                this.getAsignedTo()
+                this.getAssignedTo()
                         .stream()
                         .map(AppUser::toDto)
                         .collect(Collectors.toList())

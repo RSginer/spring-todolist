@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collections;
@@ -35,7 +34,7 @@ public class TaskServiceImplTest {
         var createdTask = new Task();
         createdTask.setDescription("Test");
         createdTask.setCreatedBy(user);
-        createdTask.setAsignedTo(Collections.singletonList(user));
+        createdTask.setAssignedTo(Collections.singletonList(user));
 
         when(taskRepository.save(any(Task.class))).thenReturn(createdTask);
 
@@ -47,7 +46,7 @@ public class TaskServiceImplTest {
 
         assertThat(taskToTest.getDescription()).isSameAs(task.getDescription());
         assertThat(taskToTest.getCreatedBy().getId()).isSameAs(user.getId());
-        assertThat(taskToTest.getAsignedTo().get(0)).isSameAs(user);
+        assertThat(taskToTest.getAssignedTo().get(0)).isSameAs(user);
     }
 
 }

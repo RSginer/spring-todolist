@@ -1,6 +1,5 @@
 package com.rsginer.springboottodolist.task.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rsginer.springboottodolist.security.MockSecurityRESTController;
 import com.rsginer.springboottodolist.security.WithMockAppUser;
@@ -61,12 +60,12 @@ public class TaskRESTControllerTest extends MockSecurityRESTController {
 
         Task task1 = new Task();
         task1.setCreatedBy(user);
-        task1.setAsignedTo(Collections.singletonList(user));
+        task1.setAssignedTo(Collections.singletonList(user));
         task1.setDescription("Test 1");
 
         Task task2 = new Task();
         task2.setCreatedBy(user);
-        task1.setAsignedTo(Collections.singletonList(user));
+        task1.setAssignedTo(Collections.singletonList(user));
         task2.setDescription("Test 2");
 
         Page<Task> page = new PageImpl<>(Arrays.asList(task1, task2));
@@ -111,11 +110,11 @@ public class TaskRESTControllerTest extends MockSecurityRESTController {
         Task task = new Task();
         task.setDescription("Test 1");
         task.setCreatedBy(user);
-        task.setAsignedTo(Collections.singletonList(user));
+        task.setAssignedTo(Collections.singletonList(user));
 
         var createTaskDto = new CreateTaskDto();
         createTaskDto.setDescription(task.getDescription());
-        createTaskDto.setAsignedTo(task.getAsignedTo().stream().map(AppUser::getId).collect(Collectors.toList()));
+        createTaskDto.setAsignedTo(task.getAssignedTo().stream().map(AppUser::getId).collect(Collectors.toList()));
 
         when(taskService.createTask(any(AppUser.class), any(Task.class))).thenReturn(task);
 

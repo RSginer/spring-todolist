@@ -16,7 +16,7 @@ public class CreateTaskMapper {
             var asignedTo = uuidAsignedTo.stream().map(AppUser::new)
                     .collect(Collectors.toList());
             asignedTo.add(appUser);
-            task.setAsignedTo(asignedTo);
+            task.setAssignedTo(asignedTo);
         }
 
         return task;

@@ -20,9 +20,9 @@ public class TaskServiceImpl implements TaskService {
 
     public Task createTask(AppUser user, Task task) {
         task.setCreatedBy(user);
-        var asignedTo = task.getAsignedTo();
-        asignedTo.add(user);
-        task.setAsignedTo(asignedTo);
+        var assignedTo = task.getAssignedTo();
+        assignedTo.add(user);
+        task.setAssignedTo(assignedTo);
 
         return this.taskRepository.save(task);
     }
