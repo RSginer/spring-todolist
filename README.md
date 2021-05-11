@@ -1,19 +1,22 @@
 ## Spring Boot Todo-List
-Kata to practice Spring Boot 
+Kata to practice Spring Boot.
 
-* API Docs: [Swagger UI](http://localhost:8080/swagger-ui/index.html?configUrl=/api-docs/swagger-config)
-
-### Install dependencies
+### Notes
+* 📚 See API Docs, run and go to  [Swagger UI](http://localhost:8080/swagger-ui/index.html?configUrl=/api-docs/swagger-config).
+* 📀 H2 Database used with Spring Data and JPA Repositories.
+* 🔒 Spring Security with BasicAuth.
+* 🧪 Unit and integration testing.
+#### Install dependencies
 ```bash
 mvn install
 ```
 
-### Run
+#### Run
 ```bash 
 mvn spring-boot:run
 ```
 
-### Test
+#### Test
 ```bash
 mvn test
 ```
