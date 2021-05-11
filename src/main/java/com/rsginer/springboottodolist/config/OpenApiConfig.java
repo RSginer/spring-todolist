@@ -30,8 +30,6 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI todoListOpenAPI() {
-        SpringDocUtils.getConfig().replaceWithClass(org.springframework.data.domain.Pageable.class,
-                org.springdoc.core.converters.models.Pageable.class);
         return new OpenAPI()
                 .info(new Info().title("RSGiner Todo-list API")
                         .description("Todo-list sample application")
