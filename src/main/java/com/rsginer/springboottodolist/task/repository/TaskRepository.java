@@ -11,5 +11,5 @@ import java.util.UUID;
 
 public interface TaskRepository extends JpaRepository<Task, UUID> {
     Page<Task> findByAssignedTo(AppUser user, Pageable pageable);
-    Optional<Task> getTaskByIdAndCreatedByOrAssignedTo(UUID taskId, AppUser user);
+    Task getTaskByIdAndCreatedByOrAssignedToContains(UUID taskId, AppUser user, AppUser assignedTo);
 }

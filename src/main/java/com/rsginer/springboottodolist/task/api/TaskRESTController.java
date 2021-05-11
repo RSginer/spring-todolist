@@ -39,8 +39,7 @@ public class TaskRESTController {
 
     @GetMapping("/{taskId}")
     @ResponseBody
-    @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Get tasks for current user")
-    @PageableAsQueryParam
+    @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Get task by taskId")
     public TaskDto getTaskById(@PathVariable @Parameter(hidden = false) UUID taskId, @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails) throws TaskNotFoundException {
         return taskService.getById(appUserDetails.getUser(), taskId).orElseThrow(() -> new TaskNotFoundException(taskId)).toDto();
     }
