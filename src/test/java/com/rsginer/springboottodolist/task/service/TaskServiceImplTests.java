@@ -99,7 +99,7 @@ public class TaskServiceImplTests {
         task.setAssignedTo(Collections.singletonList(user));
         task.setDescription("Test 1");
 
-        when(taskRepository.getTaskByIdAndCreatedByOrAssignedToContains(eq(task.getId()), any(AppUser.class), any(AppUser.class)))
+        when(taskRepository.getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(eq(task.getId()), any(AppUser.class)))
                 .thenReturn(task);
 
         var foundTask = taskService.getById(user, task.getId());
@@ -107,7 +107,7 @@ public class TaskServiceImplTests {
         assertThat(foundTask).isPresent();
         assertThat(foundTask.get().getId()).isSameAs(task.getId());
         assertThat(foundTask.get().getAssignedTo().get(0).getId()).isSameAs(user.getId());
-        verify(taskRepository).getTaskByIdAndCreatedByOrAssignedToContains(task.getId(), user, user);
+        verify(taskRepository).getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(task.getId(), user);
     }
 
 }

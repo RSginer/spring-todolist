@@ -5,11 +5,13 @@ import com.rsginer.springboottodolist.user.domain.AppUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public interface TaskRepository extends JpaRepository<Task, UUID> {
     Page<Task> findByAssignedTo(AppUser user, Pageable pageable);
-    Task getTaskByIdAndCreatedByOrAssignedToContains(UUID taskId, AppUser user, AppUser assignedTo);
+
+    @Query("select t from Task t join t.assignedTo assignedTo where t.id = ?1 and (t.createdBy = ?2 or assignedTo = ?2)")
+    Task getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(UUID taskId, AppUser user);
 }

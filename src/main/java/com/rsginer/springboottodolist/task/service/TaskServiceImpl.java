@@ -31,7 +31,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     public Optional<Task> getById(AppUser user, UUID taskId) {
-        var task = taskRepository.getTaskByIdAndCreatedByOrAssignedToContains(taskId, user, user);
+        var task = taskRepository.getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(taskId, user);
 
         return Optional.ofNullable(task);
     }

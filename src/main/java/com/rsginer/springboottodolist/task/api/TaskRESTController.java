@@ -33,7 +33,7 @@ public class TaskRESTController {
     @ResponseBody
     @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Get tasks for current user")
     @PageableAsQueryParam
-    public Page<TaskDto> getTasks(@RequestParam(required = false) @Parameter(hidden = false) Pageable pageable, @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails) {
+    public Page<TaskDto> getTasks(@RequestParam(required = false) @Parameter(hidden = true) Pageable pageable, @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails) {
         return taskService.getTasks(appUserDetails.getUser(), pageable).map(Task::toDto);
     }
 
