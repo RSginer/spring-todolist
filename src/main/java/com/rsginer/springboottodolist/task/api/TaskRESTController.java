@@ -13,7 +13,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -39,13 +38,7 @@ public class TaskRESTController {
     @GetMapping
     @ResponseBody
     public Page<TaskDto> getTasks(@RequestParam(required = false) @ApiIgnore Pageable pageable, @ApiIgnore @AuthenticationPrincipal AppUserDetails appUserDetails) {
-        System.out.println(appUserDetails);
-        System.out.println(pageable);
-        var page = taskService.getTasks(appUserDetails.getUser(), pageable);
-
-        return page.map(Task::toDto);
-
-        // return taskService.getTasks(appUserDetails.getUser(), pageable).map(Task::toDto);
+        return taskService.getTasks(appUserDetails.getUser(), pageable).map(Task::toDto);
     }
 
     @ApiOperation(value = "Create task and assign to users if needed (Optional) by default current user is assigned")

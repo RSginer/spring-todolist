@@ -1,42 +1,28 @@
 package com.rsginer.springboottodolist.task.api;
 
+import com.rsginer.springboottodolist.security.MockSecurityRESTController;
 import com.rsginer.springboottodolist.security.WithMockAppUser;
-import com.rsginer.springboottodolist.security.auth.AppUserAuthenticationProvider;
 import com.rsginer.springboottodolist.security.auth.AppUserDetails;
-import com.rsginer.springboottodolist.security.auth.UserDetailsServiceImpl;
 import com.rsginer.springboottodolist.task.Task;
-import com.rsginer.springboottodolist.task.repository.TaskRepository;
 import com.rsginer.springboottodolist.task.service.TaskService;
-import com.rsginer.springboottodolist.task.service.TaskServiceImpl;
 import com.rsginer.springboottodolist.user.AppUser;
-import com.rsginer.springboottodolist.user.repository.AppUserRepository;
-import com.rsginer.springboottodolist.user.service.AppUserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
-
 import java.util.Arrays;
 import java.util.Collections;
 
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -89,6 +75,8 @@ public class TaskRESTControllerTest extends MockSecurityRESTController {
                         .value(task1.getDescription()))
                 .andExpect(jsonPath("$.content[1].description")
                         .value(task2.getDescription()));
+
+        verify(taskService).getTasks(user, null);
     }
 
 }

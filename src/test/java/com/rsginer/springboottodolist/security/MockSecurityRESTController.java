@@ -1,4 +1,4 @@
-package com.rsginer.springboottodolist.task.api;
+package com.rsginer.springboottodolist.security;
 
 import com.rsginer.springboottodolist.security.auth.AppUserAuthenticationProvider;
 import com.rsginer.springboottodolist.security.auth.UserDetailsServiceImpl;
