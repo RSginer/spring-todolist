@@ -60,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .disable()
                 .csrf().disable()
-                .httpBasic()
+                .httpBasic().realmName("rsginer-spring-todolist")
 
         ;
     }

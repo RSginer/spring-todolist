@@ -1,6 +1,7 @@
-package com.rsginer.springboottodolist.task.dto;
+package com.rsginer.springboottodolist.task.mapper;
 
 import com.rsginer.springboottodolist.task.domain.Task;
+import com.rsginer.springboottodolist.task.dto.CreateTaskDto;
 import com.rsginer.springboottodolist.user.domain.AppUser;
 
 import java.util.stream.Collectors;

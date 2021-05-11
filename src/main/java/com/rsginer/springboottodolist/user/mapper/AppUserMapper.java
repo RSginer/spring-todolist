@@ -1,6 +1,7 @@
-package com.rsginer.springboottodolist.user.dto;
+package com.rsginer.springboottodolist.user.mapper;
 
 import com.rsginer.springboottodolist.user.domain.AppUser;
+import com.rsginer.springboottodolist.user.dto.AppUserDto;
 
 public class AppUserMapper {
     public AppUser toEntity(AppUserDto appUserDto) {

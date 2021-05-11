@@ -3,7 +3,7 @@ package com.rsginer.springboottodolist.task.api;
 import com.rsginer.springboottodolist.auth.domain.AppUserDetails;
 import com.rsginer.springboottodolist.task.domain.Task;
 import com.rsginer.springboottodolist.task.dto.CreateTaskDto;
-import com.rsginer.springboottodolist.task.dto.CreateTaskMapper;
+import com.rsginer.springboottodolist.task.mapper.CreateTaskMapper;
 import com.rsginer.springboottodolist.task.dto.TaskDto;
 import com.rsginer.springboottodolist.task.service.TaskService;
 import io.swagger.annotations.Api;

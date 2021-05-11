@@ -19,7 +19,7 @@ public class AppConfig {
     @Bean
     public Docket api() {
         ArrayList<SecurityScheme> auth = new ArrayList<>(1);
-        auth.add(new BasicAuth(""));
+        auth.add(new BasicAuth("rsginer-spring-todolist"));
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .securitySchemes(auth)
