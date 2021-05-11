@@ -20,7 +20,7 @@ mvn spring-boot:run
 ```bash
 mvn test
 ```
-- With coverage html report in `target/site/jacoco`
+- To run it with coverage html report in `target/site/jacoco`
 ```bash
 mvn verify
 ```
