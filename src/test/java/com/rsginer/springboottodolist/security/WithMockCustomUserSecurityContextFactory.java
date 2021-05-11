@@ -23,7 +23,7 @@ public class WithMockCustomUserSecurityContextFactory
         AppUserDetails principal =
                 new AppUserDetails(user);
         Authentication auth =
-                new UsernamePasswordAuthenticationToken(principal, "password", principal.getAuthorities());
+                new UsernamePasswordAuthenticationToken(principal, user.getPassword(), principal.getAuthorities());
         context.setAuthentication(auth);
         return context;
     }
