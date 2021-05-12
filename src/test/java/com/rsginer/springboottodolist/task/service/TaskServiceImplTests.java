@@ -135,6 +135,17 @@ public class TaskServiceImplTests {
     }
 
     @Test
+    public void shouldReturnEmptyGetByIdInvalidTask() throws TaskNotCreatedByAndNotAssignedToForbiddenException {
+        when(taskRepository.findById(any(UUID.class)))
+                .thenReturn(Optional.empty());
+
+        var updatedTask = taskService.getById(mockUser, mockTask.getId());
+
+        assertThat(updatedTask).isEmpty();
+        verify(taskRepository).findById(mockTask.getId());
+    }
+
+    @Test
     public void shouldFinishATask() throws TaskNotCreatedByAndNotAssignedToForbiddenException {
         when(taskRepository.findById(any(UUID.class)))
                 .thenReturn(Optional.of(mockTask));

@@ -56,13 +56,13 @@ public class TaskRESTController {
     @ResponseBody
     @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Update task by taskId")
     public TaskDto updateTaskById(@PathVariable @Parameter(hidden = false) UUID taskId,
-                                  @RequestBody(required = true) @Valid TaskDto task,
+                                  @RequestBody(required = true) @Valid CreateTaskDto task,
                                   @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails)
             throws TaskNotFoundException, TaskNotCreatedByAndNotAssignedToForbiddenException {
         return taskService.updateById(
                 appUserDetails.getUser(),
                 taskId,
-                new TaskMapper().toEntity(task, taskId)).orElseThrow(() -> new TaskNotFoundException(taskId)
+                new TaskMapper().toEntity(task, appUserDetails.getUser())).orElseThrow(() -> new TaskNotFoundException(taskId)
         ).toDto();
     }
 

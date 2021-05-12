@@ -261,13 +261,15 @@ public class TaskRESTControllerTests extends MockSecurityRESTController {
     public void shouldReturn404NotFoundUpdateTaskById() throws Exception {
         var userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         var user = userDetails.getUser();
-
-        Task task = new Task();
+        var task = new Task();
+        task.setDescription("Test");
+        CreateTaskDto createTaskDto = new CreateTaskDto();
+        createTaskDto.setDescription(task.getDescription());
 
         when(taskService.updateById(any(AppUser.class), any(UUID.class), any(Task.class))).thenReturn(Optional.empty());
 
         this.mockMvc.perform(put("/api/tasks/" + task.getId().toString())
-                .content(objectMapper.writeValueAsString(task))
+                .content(objectMapper.writeValueAsString(createTaskDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status()

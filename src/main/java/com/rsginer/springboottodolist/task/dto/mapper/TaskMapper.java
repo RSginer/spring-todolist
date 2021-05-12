@@ -24,18 +24,4 @@ public class TaskMapper {
 
         return task;
     }
-
-    public Task toEntity(TaskDto taskDto, UUID taskId) {
-        var task = new Task(taskId);
-        task.setDescription(taskDto.getDescription());
-
-        if (taskDto.getAssignedTo() != null) {
-            var appUserDtoList = taskDto.getAssignedTo();
-            var assignedTo = appUserDtoList.stream().map(appUserDto -> new AppUserMapper().toEntity(appUserDto))
-                    .collect(Collectors.toList());
-            task.setAssignedTo(assignedTo);
-        }
-
-        return task;
-    }
 }
