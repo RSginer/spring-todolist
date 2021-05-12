@@ -1,4 +1,4 @@
-package com.rsginer.springboottodolist.app;
+package com.rsginer.springboottodolist.log;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,9 +6,8 @@ import com.rsginer.springboottodolist.auth.domain.AppUserDetails;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -17,39 +16,32 @@ import java.util.Arrays;
 @Aspect
 @Component
 public class ApiMonitor {
-    private final static Log log = LogFactory.getLog(ApiMonitor.class);
-
     ObjectMapper objMapper = new ObjectMapper();
 
-    @Pointcut("execution(public * com.rsginer.*..*(..))")
-    private void anyPublicOperation() {
-    }
+    private final static Log log = LogFactory.getLog(ApiMonitor.class);
 
-
-    @Pointcut("within(com.rsginer.springboottodolist.*..api.**)")
-    private void apiOperation() {
-    }
-
-    @After("anyPublicOperation() && apiOperation() && args(param)")
-    public Object requestApi(JoinPoint joinPoint, String param) {
-        System.out.println("WORKS!");
+    @AfterReturning("execution(public * *(..)) && bean(*Controller)")
+    public void logRestApiMethods(JoinPoint joinPoint) {
         var auth = SecurityContextHolder.getContext().getAuthentication();
 
         log.info("Method: " + joinPoint.getSignature().getName());
-        log.info("Parameters:" + Arrays.toString(joinPoint.getArgs()));
-        log.info("Param: " + param);
 
-        if (auth.isAuthenticated()) {
-            var userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        try {
+            log.info("Parameters:" + objMapper.writeValueAsString(joinPoint.getArgs()));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        if (auth.getPrincipal() != null && auth.getPrincipal() != "anonymousUser") {
+            var userDetails = (AppUserDetails) auth.getPrincipal();
             var user = userDetails.getUser();
             try {
                 log.info("AppUser: " + objMapper.writeValueAsString(user.toDto()));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
+        } else {
+            log.info("AppUser: Anonymous");
         }
-
-        return joinPoint;
     }
-
 }
