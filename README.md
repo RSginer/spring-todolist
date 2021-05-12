@@ -10,7 +10,15 @@ Kata to practice Spring Boot.
 ```bash
 mvn install
 ```
-
+### Docker
+##### Build image
+```bash
+docker build -t rsginer/spring-boot-todo-list .
+```
+##### Run container
+```bash
+docker container run -d -it -p 8080:8080 --name todolist rsginer/spring-boot-todo-list
+```
 #### Run
 ```bash 
 mvn spring-boot:run
@@ -20,7 +28,7 @@ mvn spring-boot:run
 ```bash
 mvn test
 ```
-- To run it with coverage html report in `target/site/jacoco`
+- To run it with coverage html report in `target/site/jacoco/index.html`
 ```bash
 mvn verify
 ```
