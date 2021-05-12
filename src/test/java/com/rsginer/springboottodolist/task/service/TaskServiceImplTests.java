@@ -183,4 +183,26 @@ public class TaskServiceImplTests {
         verify(taskRepository).save(task);
     }
 
+    @Test
+    public void shouldReturnEmptyFinishTask() {
+        var user = new AppUser();
+        user.setUsername("test@test.com");
+        user.setPassword("Test");
+        user.setFirstName("Test");
+        user.setLastName("Test");
+
+        Task task = new Task();
+        task.setCreatedBy(user);
+        task.setAssignedTo(Collections.singletonList(user));
+        task.setDescription("Test 1");
+
+        when(taskRepository.getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(any(UUID.class), eq(user)))
+                .thenReturn(null);
+
+        var updatedTask = taskService.finishById(user, task.getId());
+
+        assertThat(updatedTask).isEmpty();
+        verify(taskRepository).getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(task.getId(), user);
+    }
+
 }
