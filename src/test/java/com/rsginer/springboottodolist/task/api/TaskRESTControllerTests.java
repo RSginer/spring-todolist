@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -145,10 +146,14 @@ public class TaskRESTControllerTests extends MockSecurityRESTController {
         task.setDescription("Test");
         task.setAssignedTo(Collections.singletonList(user));
 
+        var putTaskDto = new CreateTaskDto();
+        putTaskDto.setDescription(task.getDescription());
+        putTaskDto.setAssignedTo(task.getAssignedTo().stream().map(AppUser::getId).collect(Collectors.toList()));
+
         when(taskService.updateById(any(AppUser.class), any(UUID.class), any(Task.class))).thenReturn(Optional.of(task));
 
         this.mockMvc.perform(put("/api/tasks/" + task.getId().toString())
-                .content(objectMapper.writeValueAsString(task.toDto()))
+                .content(objectMapper.writeValueAsString(putTaskDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status()
