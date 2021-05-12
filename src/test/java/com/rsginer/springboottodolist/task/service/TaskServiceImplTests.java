@@ -15,8 +15,7 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 public class TaskServiceImplTests {
@@ -107,6 +106,53 @@ public class TaskServiceImplTests {
         assertThat(foundTask).isPresent();
         assertThat(foundTask.get().getId()).isSameAs(task.getId());
         assertThat(foundTask.get().getAssignedTo().get(0).getId()).isSameAs(user.getId());
+        verify(taskRepository).getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(task.getId(), user);
+    }
+
+    @Test
+    public void shouldUpdateTaskById() {
+        var user = new AppUser();
+        user.setUsername("test@test.com");
+        user.setPassword("Test");
+        user.setFirstName("Test");
+        user.setLastName("Test");
+
+        Task task = new Task();
+        task.setCreatedBy(user);
+        task.setAssignedTo(Collections.singletonList(user));
+        task.setDescription("Test 1");
+
+        when(taskRepository.getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(any(UUID.class), eq(user)))
+                .thenReturn(task);
+        when(taskRepository.save(any(Task.class))).thenReturn(task);
+
+        var updatedTask = taskService.updateById(user, task.getId(), task);
+
+        assertThat(updatedTask).isPresent();
+        assertThat(updatedTask.get().getId()).isSameAs(task.getId());
+        verify(taskRepository).save(task);
+        verify(taskRepository).getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(task.getId(), user);
+    }
+
+    @Test
+    public void shouldReturnEmptyUpdateInvalidTask() {
+        var user = new AppUser();
+        user.setUsername("test@test.com");
+        user.setPassword("Test");
+        user.setFirstName("Test");
+        user.setLastName("Test");
+
+        Task task = new Task();
+        task.setCreatedBy(user);
+        task.setAssignedTo(Collections.singletonList(user));
+        task.setDescription("Test 1");
+
+        when(taskRepository.getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(any(UUID.class), eq(user)))
+                .thenReturn(null);
+
+        var updatedTask = taskService.updateById(user, task.getId(), task);
+
+        assertThat(updatedTask).isEmpty();
         verify(taskRepository).getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(task.getId(), user);
     }
 

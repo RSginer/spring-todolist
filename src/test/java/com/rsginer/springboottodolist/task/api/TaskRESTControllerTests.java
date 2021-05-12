@@ -28,8 +28,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -128,6 +127,8 @@ public class TaskRESTControllerTests extends MockSecurityRESTController {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.createdBy.username").value(user.getUsername()))
                 .andExpect(jsonPath("$.description").value(task.getDescription()));
+
+        verify(taskService).createTask(eq(user), any(Task.class));
     }
 
     @Test
@@ -172,6 +173,34 @@ public class TaskRESTControllerTests extends MockSecurityRESTController {
                         .isNotFound());
 
         verify(taskService).getById(user, task.getId());
+    }
+
+    @Test
+    @WithMockAppUser
+    public void shouldUpdateTaskByTaskId() throws Exception {
+        var userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var user = userDetails.getUser();
+
+        var task = new Task();
+        task.setCreatedBy(user);
+        task.setDescription("Test");
+        task.setAssignedTo(Collections.singletonList(user));
+
+        when(taskService.updateById(any(AppUser.class), any(UUID.class), any(Task.class))).thenReturn(Optional.of(task));
+
+        this.mockMvc.perform(put("/api/tasks/" + task.getId().toString())
+                .content(objectMapper.writeValueAsString(task.toDto()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status()
+                        .isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.createdBy.username").value(user.getUsername()))
+                .andExpect(jsonPath("$.assignedTo[0].username").value(user.getUsername()))
+                .andExpect(jsonPath("$.description").value(task.getDescription()))
+                .andExpect(jsonPath("$.id").value(task.getId().toString()));;
+
+                verify(taskService).updateById(eq(user), eq(task.getId()), any(Task.class));
     }
 
 }

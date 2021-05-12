@@ -35,4 +35,19 @@ public class TaskServiceImpl implements TaskService {
 
         return Optional.ofNullable(task);
     }
+
+    public Optional<Task> updateById(AppUser user, UUID taskId, Task task) {
+        var foundTask = taskRepository.getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(taskId, user);
+
+        if (foundTask == null) {
+            return Optional.empty();
+        }
+
+        foundTask.setAssignedTo(task.getAssignedTo());
+        foundTask.setDescription(task.getDescription());
+
+        var updatedTask = taskRepository.save(foundTask);
+
+        return Optional.of(updatedTask);
+    }
 }

@@ -3,14 +3,12 @@ package com.rsginer.springboottodolist.task.api;
 import com.rsginer.springboottodolist.auth.domain.AppUserDetails;
 import com.rsginer.springboottodolist.task.domain.Task;
 import com.rsginer.springboottodolist.task.dto.CreateTaskDto;
-import com.rsginer.springboottodolist.task.mapper.CreateTaskMapper;
+import com.rsginer.springboottodolist.task.mapper.TaskMapper;
 import com.rsginer.springboottodolist.task.dto.TaskDto;
 import com.rsginer.springboottodolist.task.service.TaskNotFoundException;
 import com.rsginer.springboottodolist.task.service.TaskService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
@@ -20,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Tag(name = "Task")
@@ -44,12 +43,19 @@ public class TaskRESTController {
         return taskService.getById(appUserDetails.getUser(), taskId).orElseThrow(() -> new TaskNotFoundException(taskId)).toDto();
     }
 
+    @PutMapping("/{taskId}")
+    @ResponseBody
+    @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Update task by taskId")
+    public TaskDto updateTaskById(@PathVariable @Parameter(hidden = false) UUID taskId, @RequestBody(required=true) TaskDto task, @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails) throws TaskNotFoundException {
+        return taskService.updateById(appUserDetails.getUser(), taskId, new TaskMapper().toEntity(task, taskId)).orElseThrow(() -> new TaskNotFoundException(taskId)).toDto();
+    }
+
     @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Create task and assign to user, by default current user is assigned")
     @PostMapping("/create")
     @ResponseBody
     public TaskDto create(@RequestBody(required = true) CreateTaskDto createTask,
                           @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails)  {
-        var task = new CreateTaskMapper().toEntity(createTask, appUserDetails.getUser());
+        var task = new TaskMapper().toEntity(createTask, appUserDetails.getUser());
         return this.taskService.createTask(appUserDetails.getUser(), task).toDto();
     }
 }
