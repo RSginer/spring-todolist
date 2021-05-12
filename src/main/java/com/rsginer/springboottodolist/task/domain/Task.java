@@ -2,6 +2,8 @@ package com.rsginer.springboottodolist.task.domain;
 
 import com.rsginer.springboottodolist.task.dto.TaskDto;
 import com.rsginer.springboottodolist.user.domain.AppUser;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
@@ -26,9 +28,11 @@ public class Task {
     private TaskState state = TaskState.TODO;
 
     @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
     private AppUser createdBy;
 
     @ManyToMany
+    @NotFound(action = NotFoundAction.IGNORE)
     private List<AppUser> assignedTo;
 
     public Task() {
