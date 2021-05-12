@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @Tag(name = "User")
 @RestController
 @RequestMapping("/api/user")
@@ -23,7 +25,7 @@ public class AppUserRESTController {
 
     @Operation(description = "Register new user")
     @PostMapping("/signUp")
-    public AppUserDto signUp(@RequestBody AppUserDto appUser) throws AppUserExistsException {
+    public AppUserDto signUp(@RequestBody(required = true) @Valid AppUserDto appUser) throws AppUserExistsException {
         return appUserService.signUp(new AppUserMapper().toEntity(appUser)).toDto();
     }
 }

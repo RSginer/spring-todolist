@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -46,7 +47,7 @@ public class TaskRESTController {
     @PutMapping("/{taskId}")
     @ResponseBody
     @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Update task by taskId")
-    public TaskDto updateTaskById(@PathVariable @Parameter(hidden = false) UUID taskId, @RequestBody(required=true) TaskDto task, @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails) throws TaskNotFoundException {
+    public TaskDto updateTaskById(@PathVariable @Parameter(hidden = false) UUID taskId, @RequestBody(required=true) @Valid TaskDto task, @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails) throws TaskNotFoundException {
         return taskService.updateById(appUserDetails.getUser(), taskId, new TaskMapper().toEntity(task, taskId)).orElseThrow(() -> new TaskNotFoundException(taskId)).toDto();
     }
 
@@ -60,7 +61,7 @@ public class TaskRESTController {
     @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Create task and assign to user, by default current user is assigned")
     @PostMapping("/create")
     @ResponseBody
-    public TaskDto create(@RequestBody(required = true) CreateTaskDto createTask,
+    public TaskDto create(@RequestBody(required = true) @Valid CreateTaskDto createTask,
                           @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails)  {
         var task = new TaskMapper().toEntity(createTask, appUserDetails.getUser());
         return this.taskService.createTask(appUserDetails.getUser(), task).toDto();

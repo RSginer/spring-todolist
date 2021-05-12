@@ -24,7 +24,9 @@ public class AppMonitor {
         log.info("Method: " + joinPoint.getSignature().getName());
 
         try {
-            log.info("Parameters:" + objMapper.writeValueAsString(joinPoint.getArgs()));
+            if (joinPoint.getArgs().length > 0 && !joinPoint.getSignature().getName().equals("error")) {
+                log.info("Parameters:" + objMapper.writeValueAsString(joinPoint.getArgs()));
+            }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

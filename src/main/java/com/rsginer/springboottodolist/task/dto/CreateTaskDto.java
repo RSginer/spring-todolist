@@ -3,12 +3,16 @@ package com.rsginer.springboottodolist.task.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.UUID;
 
 @Schema(name = "CreateTask")
 public class CreateTaskDto {
+
+    @NotBlank(message = "Description is required")
     private String description;
+
     private List<UUID> asignedTo;
 
     public String getDescription() {
