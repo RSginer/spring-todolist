@@ -5,8 +5,8 @@ import com.rsginer.springboottodolist.security.MockSecurityRESTController;
 import com.rsginer.springboottodolist.security.WithMockAppUser;
 import com.rsginer.springboottodolist.auth.domain.AppUserDetails;
 import com.rsginer.springboottodolist.task.domain.Task;
+import com.rsginer.springboottodolist.task.domain.TaskState;
 import com.rsginer.springboottodolist.task.dto.CreateTaskDto;
-import com.rsginer.springboottodolist.task.service.TaskNotFoundException;
 import com.rsginer.springboottodolist.task.service.TaskService;
 import com.rsginer.springboottodolist.user.domain.AppUser;
 import org.junit.Test;
@@ -46,14 +46,6 @@ public class TaskRESTControllerTests extends MockSecurityRESTController {
     private TaskService taskService;
 
     @Test
-    public void shouldReturnUnauthorizedGettingTaskWithoutCredentials() throws Exception {
-        this.mockMvc.perform(get("/api/tasks"))
-                .andDo(print())
-                .andExpect(status()
-                        .isUnauthorized());
-    }
-
-    @Test
     @WithMockAppUser
     public void shouldReturnTaskForTestUser() throws Exception {
         var userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -85,21 +77,6 @@ public class TaskRESTControllerTests extends MockSecurityRESTController {
                         .value(task2.getDescription()));
 
         verify(taskService).getTasks(user, null);
-    }
-
-    @Test
-    public void shouldReturnUnauthorizedCreateTaskWithoutCredentials() throws Exception {
-        var task = new Task();
-        task.setDescription("Test");
-
-        when(taskService.createTask(any(AppUser.class), any(Task.class))).thenReturn(task);
-
-        this.mockMvc.perform(
-                post("/api/tasks/create")
-                        .content(objectMapper.writeValueAsString(task))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -159,24 +136,6 @@ public class TaskRESTControllerTests extends MockSecurityRESTController {
 
     @Test
     @WithMockAppUser
-    public void shouldThrowTaskNotFoundException() throws Exception {
-        var userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        var user = userDetails.getUser();
-
-        Task task = new Task();
-
-        when(taskService.getById(any(AppUser.class), any(UUID.class))).thenReturn(Optional.empty());
-
-        this.mockMvc.perform(get("/api/tasks/" + task.getId().toString()))
-                .andDo(print())
-                .andExpect(status()
-                        .isNotFound());
-
-        verify(taskService).getById(user, task.getId());
-    }
-
-    @Test
-    @WithMockAppUser
     public void shouldUpdateTaskByTaskId() throws Exception {
         var userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         var user = userDetails.getUser();
@@ -203,4 +162,135 @@ public class TaskRESTControllerTests extends MockSecurityRESTController {
                 verify(taskService).updateById(eq(user), eq(task.getId()), any(Task.class));
     }
 
+    @Test
+    @WithMockAppUser
+    public void shouldFinishATask() throws Exception {
+        var userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var user = userDetails.getUser();
+
+        var task = new Task();
+        task.setCreatedBy(user);
+        task.setDescription("Test");
+        task.setState(TaskState.FINISHED);
+        task.setAssignedTo(Collections.singletonList(user));
+
+        when(taskService.finishById(any(AppUser.class), any(UUID.class))).thenReturn(Optional.of(task));
+
+        this.mockMvc.perform(patch("/api/tasks/" + task.getId().toString() + "/finish"))
+                .andDo(print())
+                .andExpect(status()
+                        .isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(task.getId().toString()))
+                .andExpect(jsonPath("$.state").value(TaskState.FINISHED.toString()));
+
+        verify(taskService).finishById(user, task.getId());
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedGettingTaskWithoutCredentials() throws Exception {
+        this.mockMvc.perform(get("/api/tasks"))
+                .andDo(print())
+                .andExpect(status()
+                        .isUnauthorized());
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedCreateTaskWithoutCredentials() throws Exception {
+        var task = new Task();
+        task.setDescription("Test");
+
+        when(taskService.createTask(any(AppUser.class), any(Task.class))).thenReturn(task);
+
+        this.mockMvc.perform(
+                post("/api/tasks/create")
+                        .content(objectMapper.writeValueAsString(task))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedUpdateTaskWithoutCredentials() throws Exception {
+        var task = new Task();
+        task.setDescription("Test");
+
+        when(taskService.updateById(any(AppUser.class), any(UUID.class), any(Task.class))).thenReturn(Optional.of(task));
+
+        this.mockMvc.perform(
+                put("/api/tasks/create")
+                        .content(objectMapper.writeValueAsString(task))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedFinishTaskWithoutCredentials() throws Exception {
+        var task = new Task();
+        task.setDescription("Test");
+
+        when(taskService.finishById(any(AppUser.class), any(UUID.class))).thenReturn(Optional.of(task));
+
+        this.mockMvc.perform(
+                patch("/api/tasks/" + task.getId() + "/finish"))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockAppUser
+    public void shouldReturn404NotFoundGetTaskById() throws Exception {
+        var userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var user = userDetails.getUser();
+
+        Task task = new Task();
+
+        when(taskService.getById(any(AppUser.class), any(UUID.class))).thenReturn(Optional.empty());
+
+        this.mockMvc.perform(get("/api/tasks/" + task.getId().toString()))
+                .andDo(print())
+                .andExpect(status()
+                        .isNotFound());
+
+        verify(taskService).getById(user, task.getId());
+    }
+
+    @Test
+    @WithMockAppUser
+    public void shouldReturn404NotFoundUpdateTaskById() throws Exception {
+        var userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var user = userDetails.getUser();
+
+        Task task = new Task();
+
+        when(taskService.updateById(any(AppUser.class), any(UUID.class), any(Task.class))).thenReturn(Optional.empty());
+
+        this.mockMvc.perform(put("/api/tasks/" + task.getId().toString())
+                .content(objectMapper.writeValueAsString(task))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status()
+                        .isNotFound());
+
+        verify(taskService).updateById(eq(user), eq(task.getId()), any(Task.class));
+    }
+
+    @Test
+    @WithMockAppUser
+    public void shouldReturn404NotFoundFinishTaskById() throws Exception {
+        var userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var user = userDetails.getUser();
+
+        Task task = new Task();
+
+        when(taskService.finishById(any(AppUser.class), any(UUID.class))).thenReturn(Optional.empty());
+
+        this.mockMvc.perform(patch("/api/tasks/" + task.getId().toString() + "/finish"))
+                .andDo(print())
+                .andExpect(status()
+                        .isNotFound());
+
+        verify(taskService).finishById(eq(user), eq(task.getId()));
+    }
 }

@@ -1,6 +1,7 @@
 package com.rsginer.springboottodolist.task.service;
 
 import com.rsginer.springboottodolist.task.domain.Task;
+import com.rsginer.springboottodolist.task.domain.TaskState;
 import com.rsginer.springboottodolist.task.repository.TaskRepository;
 import com.rsginer.springboottodolist.user.domain.AppUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +50,18 @@ public class TaskServiceImpl implements TaskService {
         var updatedTask = taskRepository.save(foundTask);
 
         return Optional.of(updatedTask);
+    }
+
+    public Optional<Task> finishById(AppUser user, UUID taskId) {
+        var foundTask = taskRepository.getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(taskId, user);
+
+        if (foundTask == null) {
+            return Optional.empty();
+        }
+
+        foundTask.setState(TaskState.FINISHED);
+        var finishedTask = taskRepository.save(foundTask);
+
+        return Optional.of(finishedTask);
     }
 }

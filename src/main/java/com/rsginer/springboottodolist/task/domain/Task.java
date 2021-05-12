@@ -47,6 +47,10 @@ public class Task {
         this.assignedTo = new ArrayList<>();
     }
 
+    public void setState(TaskState state) {
+        this.state = state;
+    }
+
     public UUID getId() {
         return id;
     }

@@ -50,6 +50,13 @@ public class TaskRESTController {
         return taskService.updateById(appUserDetails.getUser(), taskId, new TaskMapper().toEntity(task, taskId)).orElseThrow(() -> new TaskNotFoundException(taskId)).toDto();
     }
 
+    @PatchMapping("/{taskId}/finish")
+    @ResponseBody
+    @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Finish task")
+    public TaskDto finishTaskById(@PathVariable @Parameter UUID taskId, @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails) throws TaskNotFoundException {
+        return taskService.finishById(appUserDetails.getUser(), taskId).orElseThrow(() -> new TaskNotFoundException(taskId)).toDto();
+    }
+
     @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Create task and assign to user, by default current user is assigned")
     @PostMapping("/create")
     @ResponseBody
