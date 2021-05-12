@@ -38,7 +38,7 @@ public class AppUserRESTControllerTests {
         user.setUsername("test@test.com");
         user.setFirstName("Test");
         user.setLastName("Test");
-        user.setPassword("Test");
+        user.setPassword("Test10$.");
 
         when(appUserService.signUp(any(AppUser.class))).thenReturn(user);
 
