@@ -1,6 +1,7 @@
 package com.rsginer.springboottodolist.task.service;
 
 import com.rsginer.springboottodolist.task.domain.Task;
+import com.rsginer.springboottodolist.task.domain.TaskState;
 import com.rsginer.springboottodolist.task.repository.TaskRepository;
 import com.rsginer.springboottodolist.user.domain.AppUser;
 import org.junit.Test;
@@ -154,6 +155,32 @@ public class TaskServiceImplTests {
 
         assertThat(updatedTask).isEmpty();
         verify(taskRepository).getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(task.getId(), user);
+    }
+
+    @Test
+    public void shouldFinishATask() {
+        var user = new AppUser();
+        user.setUsername("test@test.com");
+        user.setPassword("Test");
+        user.setFirstName("Test");
+        user.setLastName("Test");
+
+        Task task = new Task();
+        task.setCreatedBy(user);
+        task.setAssignedTo(Collections.singletonList(user));
+        task.setDescription("Test 1");
+
+        when(taskRepository.getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(any(UUID.class), eq(user)))
+                .thenReturn(task);
+        when(taskRepository.save(any(Task.class))).thenReturn(task);
+
+        var updatedTask = taskService.finishById(user, task.getId());
+
+        assertThat(updatedTask).isPresent();
+        assertThat(updatedTask.get().getState()).isSameAs(TaskState.FINISHED);
+        verify(taskRepository).getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(task.getId(), user);
+        task.setState(TaskState.FINISHED);
+        verify(taskRepository).save(task);
     }
 
 }
