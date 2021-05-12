@@ -6,6 +6,7 @@ Kata to practice Spring Boot.
 * 📀 H2 Database used with Spring Data and JPA Repositories.
 * 🔒 Spring Security with BasicAuth.
 * 🧪 Unit and integration testing.
+* 📈 Coverage reports with JaCoCo.
 #### Install dependencies
 ```bash
 mvn install
@@ -19,16 +20,20 @@ docker build -t rsginer/spring-boot-todo-list .
 ```bash
 docker container run -d -it -p 8080:8080 --name todolist rsginer/spring-boot-todo-list
 ```
-#### Run
+- Go to http://localhost:8080/swagger-ui/index.html?configUrl=/api-docs/swagger-config
+### Run
 ```bash 
 mvn spring-boot:run
 ```
+- Go to http://localhost:8080/swagger-ui/index.html?configUrl=/api-docs/swagger-config
 
-#### Test
+### Test
 ```bash
 mvn test
 ```
-- To run it with coverage html report in `target/site/jacoco/index.html`
+#### Coverage report
 ```bash
 mvn verify
 ```
+- Open html report with your browser `target/site/jacoco/index.html`
+
