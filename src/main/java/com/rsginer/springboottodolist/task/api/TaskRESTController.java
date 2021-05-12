@@ -32,28 +32,47 @@ public class TaskRESTController {
     @ResponseBody
     @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Get tasks for current user")
     @PageableAsQueryParam
-    public Page<TaskDto> getTasks(@RequestParam(required = false) @Parameter(hidden = true) Pageable pageable, @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails) {
-        return taskService.getTasks(appUserDetails.getUser(), pageable).map(Task::toDto);
+    public Page<TaskDto> getTasks(@RequestParam(required = false) @Parameter(hidden = true) Pageable pageable,
+                                  @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails) {
+        return taskService.getTasks(
+                appUserDetails.getUser(),
+                pageable
+        ).map(Task::toDto);
     }
 
     @GetMapping("/{taskId}")
     @ResponseBody
     @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Get task by taskId")
-    public TaskDto getTaskById(@PathVariable @Parameter(hidden = false) UUID taskId, @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails) throws TaskNotFoundException {
-        return taskService.getById(appUserDetails.getUser(), taskId).orElseThrow(() -> new TaskNotFoundException(taskId)).toDto();
+    public TaskDto getTaskById(@PathVariable @Parameter(hidden = false) UUID taskId,
+                               @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails)
+            throws TaskNotFoundException {
+        return taskService.getById(
+                appUserDetails.getUser(),
+                taskId
+        ).orElseThrow(() -> new TaskNotFoundException(taskId)
+        ).toDto();
     }
 
     @PutMapping("/{taskId}")
     @ResponseBody
     @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Update task by taskId")
-    public TaskDto updateTaskById(@PathVariable @Parameter(hidden = false) UUID taskId, @RequestBody(required=true) @Valid TaskDto task, @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails) throws TaskNotFoundException {
-        return taskService.updateById(appUserDetails.getUser(), taskId, new TaskMapper().toEntity(task, taskId)).orElseThrow(() -> new TaskNotFoundException(taskId)).toDto();
+    public TaskDto updateTaskById(@PathVariable @Parameter(hidden = false) UUID taskId,
+                                  @RequestBody(required = true) @Valid TaskDto task,
+                                  @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails)
+            throws TaskNotFoundException {
+        return taskService.updateById(
+                appUserDetails.getUser(),
+                taskId,
+                new TaskMapper().toEntity(task, taskId)).orElseThrow(() -> new TaskNotFoundException(taskId)
+        ).toDto();
     }
 
     @PatchMapping("/{taskId}/finish")
     @ResponseBody
     @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Finish task")
-    public TaskDto finishTaskById(@PathVariable @Parameter UUID taskId, @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails) throws TaskNotFoundException {
+    public TaskDto finishTaskById(@PathVariable @Parameter UUID taskId,
+                                  @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails)
+            throws TaskNotFoundException {
         return taskService.finishById(appUserDetails.getUser(), taskId).orElseThrow(() -> new TaskNotFoundException(taskId)).toDto();
     }
 
@@ -61,7 +80,7 @@ public class TaskRESTController {
     @PostMapping("/create")
     @ResponseBody
     public TaskDto create(@RequestBody(required = true) @Valid CreateTaskDto createTask,
-                          @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails)  {
+                          @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails) {
         var task = new TaskMapper().toEntity(createTask, appUserDetails.getUser());
         return this.taskService.createTask(appUserDetails.getUser(), task).toDto();
     }
