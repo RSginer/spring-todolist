@@ -14,11 +14,8 @@ import java.util.UUID;
 public class AppUser {
 
     @Id
-    @NotNull
     private UUID id;
 
-    @Email
-    @NotBlank
     @Column(unique = true)
     private String username;
     private String password;

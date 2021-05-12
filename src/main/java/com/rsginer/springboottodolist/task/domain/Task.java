@@ -19,10 +19,8 @@ import java.util.stream.Collectors;
 public class Task {
 
     @Id
-    @NotNull
     private UUID id;
 
-    @NotBlank(message = "Description is required")
     private String description;
 
     private TaskState state = TaskState.TODO;

@@ -1,6 +1,6 @@
 package com.rsginer.springboottodolist.user.api;
 
-import com.rsginer.springboottodolist.user.mapper.AppUserMapper;
+import com.rsginer.springboottodolist.user.dto.mapper.AppUserMapper;
 import com.rsginer.springboottodolist.user.dto.AppUserDto;
 import com.rsginer.springboottodolist.user.service.AppUserExistsException;
 import com.rsginer.springboottodolist.user.service.AppUserService;

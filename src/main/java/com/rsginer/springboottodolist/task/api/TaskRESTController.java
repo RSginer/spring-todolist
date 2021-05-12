@@ -3,7 +3,7 @@ package com.rsginer.springboottodolist.task.api;
 import com.rsginer.springboottodolist.auth.domain.AppUserDetails;
 import com.rsginer.springboottodolist.task.domain.Task;
 import com.rsginer.springboottodolist.task.dto.CreateTaskDto;
-import com.rsginer.springboottodolist.task.mapper.TaskMapper;
+import com.rsginer.springboottodolist.task.dto.mapper.TaskMapper;
 import com.rsginer.springboottodolist.task.dto.TaskDto;
 import com.rsginer.springboottodolist.task.service.TaskNotFoundException;
 import com.rsginer.springboottodolist.task.service.TaskService;
@@ -19,7 +19,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 import java.util.UUID;
 
 @Tag(name = "Task")

@@ -1,6 +1,6 @@
 package com.rsginer.springboottodolist.user.dto;
 
-
+import com.rsginer.springboottodolist.user.dto.validator.ValidPassword;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.Email;
@@ -11,11 +11,11 @@ import java.util.UUID;
 public class AppUserDto {
     private UUID id;
 
+    @NotBlank(message = "Username is required")
     @Email
-    @NotBlank(message = "Password is required")
     private String username;
 
-    @NotBlank(message = "Password is required")
+    @ValidPassword
     private String password;
     private String firstName;
     private String lastName;

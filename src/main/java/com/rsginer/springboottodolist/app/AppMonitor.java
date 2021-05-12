@@ -10,6 +10,8 @@ import org.aspectj.lang.annotation.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 @Aspect
 @Component
 public class AppMonitor {
@@ -24,8 +26,10 @@ public class AppMonitor {
         log.info("Method: " + joinPoint.getSignature().getName());
 
         try {
-            if (joinPoint.getArgs().length > 0 && !joinPoint.getSignature().getName().equals("error")) {
+            if (!joinPoint.getSignature().getName().equals("error")) {
                 log.info("Parameters:" + objMapper.writeValueAsString(joinPoint.getArgs()));
+            } else {
+                log.info("Parameters:" + Arrays.toString(joinPoint.getArgs()));
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
