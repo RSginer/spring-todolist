@@ -2,11 +2,8 @@ package com.rsginer.springboottodolist.task.dto.mapper;
 
 import com.rsginer.springboottodolist.task.domain.Task;
 import com.rsginer.springboottodolist.task.dto.CreateTaskDto;
-import com.rsginer.springboottodolist.task.dto.TaskDto;
 import com.rsginer.springboottodolist.user.domain.AppUser;
-import com.rsginer.springboottodolist.user.dto.mapper.AppUserMapper;
 
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class TaskMapper {
@@ -14,8 +11,8 @@ public class TaskMapper {
         var task = new Task(appUser);
         task.setDescription(createTaskDto.getDescription());
 
-        if (createTaskDto.getAsignedTo() != null) {
-            var uuidAssignedTo = createTaskDto.getAsignedTo();
+        if (createTaskDto.getAssignedTo() != null) {
+            var uuidAssignedTo = createTaskDto.getAssignedTo();
             var assignedTo = uuidAssignedTo.stream().map(AppUser::new)
                     .collect(Collectors.toList());
             assignedTo.add(appUser);

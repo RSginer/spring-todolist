@@ -92,7 +92,7 @@ public class TaskRESTControllerTests extends MockSecurityRESTController {
 
         var createTaskDto = new CreateTaskDto();
         createTaskDto.setDescription(task.getDescription());
-        createTaskDto.setAsignedTo(Collections.singletonList(user.getId()));
+        createTaskDto.setAssignedTo(Collections.singletonList(user.getId()));
 
         when(taskService.createTask(any(AppUser.class), any(Task.class))).thenReturn(task);
 

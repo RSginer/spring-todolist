@@ -13,7 +13,7 @@ public class CreateTaskDto {
     @NotBlank(message = "Description is required")
     private String description;
 
-    private List<UUID> asignedTo;
+    private List<UUID> assignedTo;
 
     public String getDescription() {
         return description;
@@ -23,11 +23,11 @@ public class CreateTaskDto {
         this.description = description;
     }
 
-    public List<UUID> getAsignedTo() {
-        return asignedTo;
+    public List<UUID> getAssignedTo() {
+        return assignedTo;
     }
 
-    public void setAsignedTo(List<UUID> asignedTo) {
-        this.asignedTo = asignedTo;
+    public void setAssignedTo(List<UUID> assignedTo) {
+        this.assignedTo = assignedTo;
     }
 }
