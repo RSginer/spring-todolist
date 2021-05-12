@@ -1,4 +1,4 @@
-package com.rsginer.springboottodolist.log;
+package com.rsginer.springboottodolist.app;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,19 +6,16 @@ import com.rsginer.springboottodolist.auth.domain.AppUserDetails;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-
 @Aspect
 @Component
-public class ApiMonitor {
+public class AppMonitor {
     ObjectMapper objMapper = new ObjectMapper();
 
-    private final static Log log = LogFactory.getLog(ApiMonitor.class);
+    private final static Log log = LogFactory.getLog(AppMonitor.class);
 
     @AfterReturning("execution(public * *(..)) && bean(*Controller)")
     public void logRestApiMethods(JoinPoint joinPoint) {
