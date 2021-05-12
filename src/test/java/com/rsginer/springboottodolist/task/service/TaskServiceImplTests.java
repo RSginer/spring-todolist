@@ -5,6 +5,7 @@ import com.rsginer.springboottodolist.task.domain.TaskState;
 import com.rsginer.springboottodolist.task.repository.TaskRepository;
 import com.rsginer.springboottodolist.user.domain.AppUser;
 import org.junit.Test;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -26,183 +27,135 @@ public class TaskServiceImplTests {
     @InjectMocks
     private TaskServiceImpl taskService;
 
-    @Test
-    public void shouldCreateATaskAndSetCreatedByAndAssignToUser() {
+    private AppUser mockUser;
+
+    private Task mockTask;
+
+    private List<Task> mockTasks;
+
+    @Before
+    public void setup() {
         var user = new AppUser();
         user.setUsername("test@test.com");
         user.setPassword("Test");
         user.setFirstName("Test");
         user.setLastName("Test");
+        mockUser = user;
 
         var createdTask = new Task();
         createdTask.setDescription("Test");
         createdTask.setCreatedBy(user);
         createdTask.setAssignedTo(Collections.singletonList(user));
+        mockTask = createdTask;
 
-        when(taskRepository.save(any(Task.class))).thenReturn(createdTask);
+
+        Task task1 = new Task();
+        task1.setCreatedBy(mockUser);
+        task1.setAssignedTo(Collections.singletonList(mockUser));
+        task1.setDescription("Test 1");
+
+        Task task2 = new Task();
+        task2.setCreatedBy(mockUser);
+        task2.setAssignedTo(Collections.singletonList(mockUser));
+        task2.setDescription("Test 2");
+        mockTasks = Arrays.asList(task1, task2);
+    }
+
+    @Test
+    public void shouldCreateATaskAndSetCreatedByAndAssignToUser() {
+        System.out.println(mockTask.getId());
+        when(taskRepository.save(any(Task.class))).thenReturn(mockTask);
 
         var task =  new Task();
-        task.setId(createdTask.getId());
-        task.setDescription(createdTask.getDescription());
+        task.setId(mockTask.getId());
+        task.setDescription(mockTask.getDescription());
 
-        var taskToTest = this.taskService.createTask(user, task);
+        var taskToTest = this.taskService.createTask(mockUser, task);
 
         assertThat(taskToTest.getDescription()).isSameAs(task.getDescription());
-        assertThat(taskToTest.getCreatedBy().getId()).isSameAs(user.getId());
-        assertThat(taskToTest.getAssignedTo().get(0)).isSameAs(user);
+        assertThat(taskToTest.getCreatedBy().getId()).isSameAs(mockUser.getId());
+        assertThat(taskToTest.getAssignedTo().get(0)).isSameAs(mockUser);
     }
 
     @Test
     public void shouldReturnTheTasksForGivenUser() {
-        var user = new AppUser();
-        user.setUsername("test@test.com");
-        user.setPassword("Test");
-        user.setFirstName("Test");
-        user.setLastName("Test");
-
-        Task task1 = new Task();
-        task1.setCreatedBy(user);
-        task1.setAssignedTo(Collections.singletonList(user));
-        task1.setDescription("Test 1");
-
-        Task task2 = new Task();
-        task2.setCreatedBy(user);
-        task2.setAssignedTo(Collections.singletonList(user));
-        task2.setDescription("Test 2");
-
         when(taskRepository.findByAssignedTo(any(AppUser.class), eq(null)))
                 .thenReturn(
-                        new PageImpl<>(Arrays.asList(task1, task2))
+                        new PageImpl<>(mockTasks)
                 );
 
-        var page = taskService.getTasks(user, null);
+        var page = taskService.getTasks(mockUser, null);
 
-        assertThat(page.toList().get(0).getId()).isSameAs(task1.getId());
-        assertThat(page.toList().get(0).getAssignedTo().indexOf(user)).isNotNegative();
+        assertThat(page.toList().get(0).getId()).isSameAs(mockTasks.get(0).getId());
+        assertThat(page.toList().get(0).getAssignedTo().indexOf(mockUser)).isNotNegative();
 
-        assertThat(page.toList().get(1).getId()).isSameAs(task2.getId());
-        assertThat(page.toList().get(1).getAssignedTo().indexOf(user)).isNotNegative();
+        assertThat(page.toList().get(1).getId()).isSameAs(mockTasks.get(1).getId());
+        assertThat(page.toList().get(1).getAssignedTo().indexOf(mockUser)).isNotNegative();
 
-        verify(taskRepository).findByAssignedTo(user, null);
+        verify(taskRepository).findByAssignedTo(mockUser, null);
     }
 
     @Test
-    public void shouldReturnTaskByIdForGivenUser() {
-        var user = new AppUser();
-        user.setUsername("test@test.com");
-        user.setPassword("Test");
-        user.setFirstName("Test");
-        user.setLastName("Test");
+    public void shouldReturnTaskByIdForGivenUser() throws TaskNotCreatedByAndNotAssignedToForbidden {
+        when(taskRepository.findById(mockTask.getId()))
+                .thenReturn(Optional.of(mockTask));
 
-        Task task = new Task();
-        task.setCreatedBy(user);
-        task.setAssignedTo(Collections.singletonList(user));
-        task.setDescription("Test 1");
-
-        when(taskRepository.getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(eq(task.getId()), any(AppUser.class)))
-                .thenReturn(task);
-
-        var foundTask = taskService.getById(user, task.getId());
+        var foundTask = taskService.getById(mockUser, mockTask.getId());
 
         assertThat(foundTask).isPresent();
-        assertThat(foundTask.get().getId()).isSameAs(task.getId());
-        assertThat(foundTask.get().getAssignedTo().get(0).getId()).isSameAs(user.getId());
-        verify(taskRepository).getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(task.getId(), user);
+        assertThat(foundTask.get().getId()).isSameAs(mockTask.getId());
+        assertThat(foundTask.get().getAssignedTo().get(0).getId()).isSameAs(mockUser.getId());
+        verify(taskRepository).findById(mockTask.getId());
     }
 
     @Test
-    public void shouldUpdateTaskById() {
-        var user = new AppUser();
-        user.setUsername("test@test.com");
-        user.setPassword("Test");
-        user.setFirstName("Test");
-        user.setLastName("Test");
+    public void shouldUpdateTaskById() throws TaskNotCreatedByAndNotAssignedToForbidden {
+        when(taskRepository.findById(any(UUID.class)))
+                .thenReturn(Optional.of(mockTask));
+        when(taskRepository.save(any(Task.class))).thenReturn(mockTask);
 
-        Task task = new Task();
-        task.setCreatedBy(user);
-        task.setAssignedTo(Collections.singletonList(user));
-        task.setDescription("Test 1");
-
-        when(taskRepository.getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(any(UUID.class), eq(user)))
-                .thenReturn(task);
-        when(taskRepository.save(any(Task.class))).thenReturn(task);
-
-        var updatedTask = taskService.updateById(user, task.getId(), task);
+        var updatedTask = taskService.updateById(mockUser, mockTask.getId(), mockTask);
 
         assertThat(updatedTask).isPresent();
-        assertThat(updatedTask.get().getId()).isSameAs(task.getId());
-        verify(taskRepository).save(task);
-        verify(taskRepository).getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(task.getId(), user);
+        assertThat(updatedTask.get().getId()).isSameAs(mockTask.getId());
+        verify(taskRepository).save(mockTask);
+        verify(taskRepository).findById(mockTask.getId());
     }
 
     @Test
-    public void shouldReturnEmptyUpdateInvalidTask() {
-        var user = new AppUser();
-        user.setUsername("test@test.com");
-        user.setPassword("Test");
-        user.setFirstName("Test");
-        user.setLastName("Test");
+    public void shouldReturnEmptyUpdateInvalidTask() throws TaskNotCreatedByAndNotAssignedToForbidden {
+        when(taskRepository.findById(any(UUID.class)))
+                .thenReturn(Optional.empty());
 
-        Task task = new Task();
-        task.setCreatedBy(user);
-        task.setAssignedTo(Collections.singletonList(user));
-        task.setDescription("Test 1");
-
-        when(taskRepository.getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(any(UUID.class), eq(user)))
-                .thenReturn(null);
-
-        var updatedTask = taskService.updateById(user, task.getId(), task);
+        var updatedTask = taskService.updateById(mockUser, mockTask.getId(), mockTask);
 
         assertThat(updatedTask).isEmpty();
-        verify(taskRepository).getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(task.getId(), user);
+        verify(taskRepository).findById(mockTask.getId());
     }
 
     @Test
-    public void shouldFinishATask() {
-        var user = new AppUser();
-        user.setUsername("test@test.com");
-        user.setPassword("Test");
-        user.setFirstName("Test");
-        user.setLastName("Test");
+    public void shouldFinishATask() throws TaskNotCreatedByAndNotAssignedToForbidden {
+        when(taskRepository.findById(any(UUID.class)))
+                .thenReturn(Optional.of(mockTask));
+        when(taskRepository.save(any(Task.class))).thenReturn(mockTask);
 
-        Task task = new Task();
-        task.setCreatedBy(user);
-        task.setAssignedTo(Collections.singletonList(user));
-        task.setDescription("Test 1");
-
-        when(taskRepository.getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(any(UUID.class), eq(user)))
-                .thenReturn(task);
-        when(taskRepository.save(any(Task.class))).thenReturn(task);
-
-        var updatedTask = taskService.finishById(user, task.getId());
+        var updatedTask = taskService.finishById(mockUser, mockTask.getId());
 
         assertThat(updatedTask).isPresent();
         assertThat(updatedTask.get().getState()).isSameAs(TaskState.FINISHED);
-        verify(taskRepository).getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(task.getId(), user);
-        task.setState(TaskState.FINISHED);
-        verify(taskRepository).save(task);
+        verify(taskRepository).findById(mockTask.getId());
+        verify(taskRepository).save(mockTask);
     }
 
     @Test
-    public void shouldReturnEmptyFinishTask() {
-        var user = new AppUser();
-        user.setUsername("test@test.com");
-        user.setPassword("Test");
-        user.setFirstName("Test");
-        user.setLastName("Test");
+    public void shouldReturnEmptyFinishTask() throws TaskNotCreatedByAndNotAssignedToForbidden {
+        when(taskRepository.findById(any(UUID.class)))
+                .thenReturn(Optional.empty());
 
-        Task task = new Task();
-        task.setCreatedBy(user);
-        task.setAssignedTo(Collections.singletonList(user));
-        task.setDescription("Test 1");
-
-        when(taskRepository.getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(any(UUID.class), eq(user)))
-                .thenReturn(null);
-
-        var updatedTask = taskService.finishById(user, task.getId());
+        var updatedTask = taskService.finishById(mockUser, mockTask.getId());
 
         assertThat(updatedTask).isEmpty();
-        verify(taskRepository).getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(task.getId(), user);
+        verify(taskRepository).findById(mockTask.getId());
     }
 
 }

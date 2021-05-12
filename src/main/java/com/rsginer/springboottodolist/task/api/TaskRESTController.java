@@ -5,6 +5,7 @@ import com.rsginer.springboottodolist.task.domain.Task;
 import com.rsginer.springboottodolist.task.dto.CreateTaskDto;
 import com.rsginer.springboottodolist.task.dto.mapper.TaskMapper;
 import com.rsginer.springboottodolist.task.dto.TaskDto;
+import com.rsginer.springboottodolist.task.service.TaskNotCreatedByAndNotAssignedToForbidden;
 import com.rsginer.springboottodolist.task.service.TaskNotFoundException;
 import com.rsginer.springboottodolist.task.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,7 +46,7 @@ public class TaskRESTController {
     @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Get task by taskId")
     public TaskDto getTaskById(@PathVariable @Parameter(hidden = false) UUID taskId,
                                @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails)
-            throws TaskNotFoundException {
+            throws TaskNotFoundException, TaskNotCreatedByAndNotAssignedToForbidden {
         return taskService.getById(
                 appUserDetails.getUser(),
                 taskId
@@ -59,7 +60,7 @@ public class TaskRESTController {
     public TaskDto updateTaskById(@PathVariable @Parameter(hidden = false) UUID taskId,
                                   @RequestBody(required = true) @Valid TaskDto task,
                                   @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails)
-            throws TaskNotFoundException {
+            throws TaskNotFoundException, TaskNotCreatedByAndNotAssignedToForbidden {
         return taskService.updateById(
                 appUserDetails.getUser(),
                 taskId,
@@ -72,7 +73,7 @@ public class TaskRESTController {
     @Operation(security = @SecurityRequirement(name = "basicAuth"), description = "Finish task")
     public TaskDto finishTaskById(@PathVariable @Parameter UUID taskId,
                                   @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails)
-            throws TaskNotFoundException {
+            throws TaskNotFoundException, TaskNotCreatedByAndNotAssignedToForbidden {
         return taskService.finishById(appUserDetails.getUser(), taskId).orElseThrow(() -> new TaskNotFoundException(taskId)).toDto();
     }
 

@@ -11,12 +11,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private TaskRepository taskRepository;
+
+    private boolean isUserAthorized(AppUser user, Task task) {
+        var assignedToUuids = task.getAssignedTo().stream().map(AppUser::getUsername).collect(Collectors.toList());
+
+        return task.getCreatedBy().getUsername().equals(user.getUsername()) || assignedToUuids.contains(user.getId().toString());
+    }
 
     public Page<Task> getTasks(AppUser user, Pageable pageable) {
         return this.taskRepository.findByAssignedTo(user, pageable);
@@ -31,37 +38,58 @@ public class TaskServiceImpl implements TaskService {
         return this.taskRepository.save(task);
     }
 
-    public Optional<Task> getById(AppUser user, UUID taskId) {
-        var task = taskRepository.getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(taskId, user);
+    public Optional<Task> getById(AppUser user, UUID taskId) throws TaskNotCreatedByAndNotAssignedToForbidden {
+        var task = taskRepository.findById(taskId);
 
-        return Optional.ofNullable(task);
-    }
+        if (task.isPresent()) {
+            if (isUserAthorized(user, task.get())) {
+                return task;
+            }
 
-    public Optional<Task> updateById(AppUser user, UUID taskId, Task task) {
-        var foundTask = taskRepository.getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(taskId, user);
-
-        if (foundTask == null) {
-            return Optional.empty();
+            throw new TaskNotCreatedByAndNotAssignedToForbidden(task.get().getId());
         }
 
-        foundTask.setAssignedTo(task.getAssignedTo());
-        foundTask.setDescription(task.getDescription());
-
-        var updatedTask = taskRepository.save(foundTask);
-
-        return Optional.of(updatedTask);
+        return Optional.empty();
     }
 
-    public Optional<Task> finishById(AppUser user, UUID taskId) {
-        var foundTask = taskRepository.getTaskByIdAndIsCreatedByAppUserOrIsInAssignedTo(taskId, user);
+    public Optional<Task> updateById(AppUser user, UUID taskId, Task task) throws TaskNotCreatedByAndNotAssignedToForbidden {
+        var foundTask = taskRepository.findById(taskId);
 
-        if (foundTask == null) {
-            return Optional.empty();
+        if (foundTask.isPresent()) {
+            if (isUserAthorized(user, foundTask.get())) {
+                foundTask.get().setDescription(task.getDescription());
+
+                if (!task.getAssignedTo().isEmpty()) {
+                    foundTask.get().setAssignedTo(task.getAssignedTo());
+                }
+
+                var updatedTask = taskRepository.save(foundTask.get());
+
+                return Optional.of(updatedTask);
+            }
+
+            throw new TaskNotCreatedByAndNotAssignedToForbidden(foundTask.get().getId());
         }
 
-        foundTask.setState(TaskState.FINISHED);
-        var finishedTask = taskRepository.save(foundTask);
+        return Optional.empty();
+    }
 
-        return Optional.of(finishedTask);
+    public Optional<Task> finishById(AppUser user, UUID taskId) throws TaskNotCreatedByAndNotAssignedToForbidden {
+        var foundTask = taskRepository.findById(taskId);
+
+        if (foundTask.isPresent()) {
+
+            if (isUserAthorized(user, foundTask.get())) {
+                foundTask.get().setState(TaskState.FINISHED);
+                var finishedTask = taskRepository.save(foundTask.get());
+
+                return Optional.of(finishedTask);
+            }
+
+            throw new TaskNotCreatedByAndNotAssignedToForbidden(foundTask.get().getId());
+        }
+
+        return Optional.empty();
+
     }
 }

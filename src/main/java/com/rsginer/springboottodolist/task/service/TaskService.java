@@ -11,7 +11,7 @@ import java.util.UUID;
 public interface TaskService {
     Page<Task> getTasks(AppUser user, Pageable pageable);
     Task createTask(AppUser user, Task task);
-    Optional<Task> getById(AppUser user, UUID taskId);
-    Optional<Task> updateById(AppUser user, UUID taskId, Task task);
-    Optional<Task> finishById(AppUser user, UUID taskId);
+    Optional<Task> getById(AppUser user, UUID taskId) throws TaskNotCreatedByAndNotAssignedToForbidden;
+    Optional<Task> updateById(AppUser user, UUID taskId, Task task) throws TaskNotCreatedByAndNotAssignedToForbidden;
+    Optional<Task> finishById(AppUser user, UUID taskId) throws TaskNotCreatedByAndNotAssignedToForbidden;
 }
