@@ -2,7 +2,6 @@ package com.rsginer.springboottodolist.user.api;
 
 import com.rsginer.springboottodolist.user.dto.mapper.AppUserMapper;
 import com.rsginer.springboottodolist.user.dto.AppUserDto;
-import com.rsginer.springboottodolist.user.service.AppUserExistsException;
 import com.rsginer.springboottodolist.user.service.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

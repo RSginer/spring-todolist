@@ -1,10 +1,10 @@
 package com.rsginer.springboottodolist.task.service;
 
 import com.rsginer.springboottodolist.task.domain.Task;
+import com.rsginer.springboottodolist.task.api.TaskNotCreatedByAndNotAssignedToForbiddenException;
 import com.rsginer.springboottodolist.task.domain.TaskState;
 import com.rsginer.springboottodolist.task.repository.TaskRepository;
 import com.rsginer.springboottodolist.user.domain.AppUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

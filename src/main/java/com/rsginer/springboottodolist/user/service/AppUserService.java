@@ -1,5 +1,6 @@
 package com.rsginer.springboottodolist.user.service;
 
+import com.rsginer.springboottodolist.user.api.AppUserExistsException;
 import com.rsginer.springboottodolist.user.domain.AppUser;
 
 public interface AppUserService {

@@ -1,4 +1,4 @@
-package com.rsginer.springboottodolist.user.service;
+package com.rsginer.springboottodolist.user.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

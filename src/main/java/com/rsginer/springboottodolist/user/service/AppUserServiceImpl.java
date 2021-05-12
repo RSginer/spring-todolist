@@ -1,5 +1,6 @@
 package com.rsginer.springboottodolist.user.service;
 
+import com.rsginer.springboottodolist.user.api.AppUserExistsException;
 import com.rsginer.springboottodolist.user.domain.AppUser;
 import com.rsginer.springboottodolist.user.repository.AppUserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;

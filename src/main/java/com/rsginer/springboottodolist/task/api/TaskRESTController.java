@@ -5,8 +5,6 @@ import com.rsginer.springboottodolist.task.domain.Task;
 import com.rsginer.springboottodolist.task.dto.CreateTaskDto;
 import com.rsginer.springboottodolist.task.dto.mapper.TaskMapper;
 import com.rsginer.springboottodolist.task.dto.TaskDto;
-import com.rsginer.springboottodolist.task.service.TaskNotCreatedByAndNotAssignedToForbiddenException;
-import com.rsginer.springboottodolist.task.service.TaskNotFoundException;
 import com.rsginer.springboottodolist.task.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
