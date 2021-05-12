@@ -7,6 +7,8 @@ Kata to practice Spring Boot.
 * 🔒 Spring Security with BasicAuth.
 * 🧪 Unit and integration testing.
 * 📈 Coverage reports with JaCoCo.
+* 📊 App Monitor with AOP.
+
 #### Install dependencies
 ```bash
 mvn install
