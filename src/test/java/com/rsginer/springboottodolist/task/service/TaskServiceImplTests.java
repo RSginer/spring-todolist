@@ -96,7 +96,7 @@ public class TaskServiceImplTests {
     }
 
     @Test
-    public void shouldReturnTaskByIdForGivenUser() throws TaskNotCreatedByAndNotAssignedToForbidden {
+    public void shouldReturnTaskByIdForGivenUser() throws TaskNotCreatedByAndNotAssignedToForbiddenException {
         when(taskRepository.findById(mockTask.getId()))
                 .thenReturn(Optional.of(mockTask));
 
@@ -109,7 +109,7 @@ public class TaskServiceImplTests {
     }
 
     @Test
-    public void shouldUpdateTaskById() throws TaskNotCreatedByAndNotAssignedToForbidden {
+    public void shouldUpdateTaskById() throws TaskNotCreatedByAndNotAssignedToForbiddenException {
         when(taskRepository.findById(any(UUID.class)))
                 .thenReturn(Optional.of(mockTask));
         when(taskRepository.save(any(Task.class))).thenReturn(mockTask);
@@ -123,7 +123,7 @@ public class TaskServiceImplTests {
     }
 
     @Test
-    public void shouldReturnEmptyUpdateInvalidTask() throws TaskNotCreatedByAndNotAssignedToForbidden {
+    public void shouldReturnEmptyUpdateInvalidTask() throws TaskNotCreatedByAndNotAssignedToForbiddenException {
         when(taskRepository.findById(any(UUID.class)))
                 .thenReturn(Optional.empty());
 
@@ -134,7 +134,7 @@ public class TaskServiceImplTests {
     }
 
     @Test
-    public void shouldFinishATask() throws TaskNotCreatedByAndNotAssignedToForbidden {
+    public void shouldFinishATask() throws TaskNotCreatedByAndNotAssignedToForbiddenException {
         when(taskRepository.findById(any(UUID.class)))
                 .thenReturn(Optional.of(mockTask));
         when(taskRepository.save(any(Task.class))).thenReturn(mockTask);
@@ -148,13 +148,64 @@ public class TaskServiceImplTests {
     }
 
     @Test
-    public void shouldReturnEmptyFinishTask() throws TaskNotCreatedByAndNotAssignedToForbidden {
+    public void shouldReturnEmptyFinishTask() throws TaskNotCreatedByAndNotAssignedToForbiddenException {
         when(taskRepository.findById(any(UUID.class)))
                 .thenReturn(Optional.empty());
 
         var updatedTask = taskService.finishById(mockUser, mockTask.getId());
 
         assertThat(updatedTask).isEmpty();
+        verify(taskRepository).findById(mockTask.getId());
+    }
+
+
+    @Test(expected = TaskNotCreatedByAndNotAssignedToForbiddenException.class)
+    public void shouldThrowForbiddenUpdateTask() throws TaskNotCreatedByAndNotAssignedToForbiddenException {
+        var hacker = new AppUser();
+        hacker.setUsername("Hacker");
+        hacker.setPassword("Hacker");
+        hacker.setFirstName("Hacker");
+        hacker.setLastName("Hacker");
+
+        when(taskRepository.findById(any(UUID.class)))
+                .thenReturn(Optional.of(mockTask));
+
+        taskService.updateById(hacker, mockTask.getId(), mockTask);
+
+        verify(taskRepository).findById(mockTask.getId());
+    }
+
+
+    @Test(expected = TaskNotCreatedByAndNotAssignedToForbiddenException.class)
+    public void shouldThrowForbiddenFinishTask() throws TaskNotCreatedByAndNotAssignedToForbiddenException {
+        var hacker = new AppUser();
+        hacker.setUsername("Hacker");
+        hacker.setPassword("Hacker");
+        hacker.setFirstName("Hacker");
+        hacker.setLastName("Hacker");
+
+        when(taskRepository.findById(any(UUID.class)))
+                .thenReturn(Optional.of(mockTask));
+
+        taskService.finishById(hacker, mockTask.getId());
+
+        verify(taskRepository).findById(mockTask.getId());
+    }
+
+
+    @Test(expected = TaskNotCreatedByAndNotAssignedToForbiddenException.class)
+    public void shouldThrowForbiddenGetTaskById() throws TaskNotCreatedByAndNotAssignedToForbiddenException {
+        var hacker = new AppUser();
+        hacker.setUsername("Hacker");
+        hacker.setPassword("Hacker");
+        hacker.setFirstName("Hacker");
+        hacker.setLastName("Hacker");
+
+        when(taskRepository.findById(any(UUID.class)))
+                .thenReturn(Optional.of(mockTask));
+
+        taskService.getById(hacker, mockTask.getId());
+
         verify(taskRepository).findById(mockTask.getId());
     }
 

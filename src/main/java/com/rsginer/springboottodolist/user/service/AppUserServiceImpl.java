@@ -2,18 +2,18 @@ package com.rsginer.springboottodolist.user.service;
 
 import com.rsginer.springboottodolist.user.domain.AppUser;
 import com.rsginer.springboottodolist.user.repository.AppUserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AppUserServiceImpl implements AppUserService{
-    @Autowired
-    private AppUserRepository appUserRepository;
+    private final AppUserRepository appUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public AppUserServiceImpl(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
+        this.appUserRepository = appUserRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public AppUser signUp(AppUser appUser) throws AppUserExistsException {
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword().trim()));

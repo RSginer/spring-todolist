@@ -16,8 +16,11 @@ import java.util.stream.Collectors;
 @Service
 public class TaskServiceImpl implements TaskService {
 
-    @Autowired
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
+
+    public TaskServiceImpl(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
 
     private boolean isUserAthorized(AppUser user, Task task) {
         var assignedToUuids = task.getAssignedTo().stream().map(AppUser::getUsername).collect(Collectors.toList());
@@ -38,7 +41,7 @@ public class TaskServiceImpl implements TaskService {
         return this.taskRepository.save(task);
     }
 
-    public Optional<Task> getById(AppUser user, UUID taskId) throws TaskNotCreatedByAndNotAssignedToForbidden {
+    public Optional<Task> getById(AppUser user, UUID taskId) throws TaskNotCreatedByAndNotAssignedToForbiddenException {
         var task = taskRepository.findById(taskId);
 
         if (task.isPresent()) {
@@ -46,13 +49,13 @@ public class TaskServiceImpl implements TaskService {
                 return task;
             }
 
-            throw new TaskNotCreatedByAndNotAssignedToForbidden(task.get().getId());
+            throw new TaskNotCreatedByAndNotAssignedToForbiddenException(task.get().getId());
         }
 
         return Optional.empty();
     }
 
-    public Optional<Task> updateById(AppUser user, UUID taskId, Task task) throws TaskNotCreatedByAndNotAssignedToForbidden {
+    public Optional<Task> updateById(AppUser user, UUID taskId, Task task) throws TaskNotCreatedByAndNotAssignedToForbiddenException {
         var foundTask = taskRepository.findById(taskId);
 
         if (foundTask.isPresent()) {
@@ -68,13 +71,13 @@ public class TaskServiceImpl implements TaskService {
                 return Optional.of(updatedTask);
             }
 
-            throw new TaskNotCreatedByAndNotAssignedToForbidden(foundTask.get().getId());
+            throw new TaskNotCreatedByAndNotAssignedToForbiddenException(foundTask.get().getId());
         }
 
         return Optional.empty();
     }
 
-    public Optional<Task> finishById(AppUser user, UUID taskId) throws TaskNotCreatedByAndNotAssignedToForbidden {
+    public Optional<Task> finishById(AppUser user, UUID taskId) throws TaskNotCreatedByAndNotAssignedToForbiddenException {
         var foundTask = taskRepository.findById(taskId);
 
         if (foundTask.isPresent()) {
@@ -86,7 +89,7 @@ public class TaskServiceImpl implements TaskService {
                 return Optional.of(finishedTask);
             }
 
-            throw new TaskNotCreatedByAndNotAssignedToForbidden(foundTask.get().getId());
+            throw new TaskNotCreatedByAndNotAssignedToForbiddenException(foundTask.get().getId());
         }
 
         return Optional.empty();
