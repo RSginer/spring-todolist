@@ -336,6 +336,7 @@ public class TaskRESTControllerTests extends MockSecurityRESTController {
         task.setDescription("Test");
         CreateTaskDto createTaskDto = new CreateTaskDto();
         createTaskDto.setDescription(task.getDescription());
+        createTaskDto.setState(TaskState.TODO);
 
         when(taskService.updateById(any(AppUser.class), any(UUID.class), any(Task.class))).thenReturn(Optional.empty());
 
