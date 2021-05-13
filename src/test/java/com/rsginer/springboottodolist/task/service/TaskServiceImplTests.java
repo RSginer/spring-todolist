@@ -65,7 +65,6 @@ public class TaskServiceImplTests {
 
     @Test
     public void shouldCreateATaskAndSetCreatedByAndAssignToUser() {
-        System.out.println(mockTask.getId());
         when(taskRepository.save(any(Task.class))).thenReturn(mockTask);
 
         var task =  new Task();
