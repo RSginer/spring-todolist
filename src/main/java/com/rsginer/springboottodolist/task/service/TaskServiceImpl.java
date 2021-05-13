@@ -1,5 +1,6 @@
 package com.rsginer.springboottodolist.task.service;
 
+import com.rsginer.springboottodolist.task.domain.ACLTask;
 import com.rsginer.springboottodolist.task.domain.Task;
 import com.rsginer.springboottodolist.task.api.TaskNotCreatedByAndNotAssignedToForbiddenException;
 import com.rsginer.springboottodolist.task.domain.TaskState;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -22,11 +22,7 @@ public class TaskServiceImpl implements TaskService {
         this.taskRepository = taskRepository;
     }
 
-    private boolean isUserAuthorized(AppUser user, Task task) {
-        var assignedToUuids = task.getAssignedTo().stream().map(AppUser::getUsername).collect(Collectors.toList());
 
-        return task.getCreatedBy().getUsername().equals(user.getUsername()) || assignedToUuids.contains(user.getId().toString());
-    }
 
     public Page<Task> getTasks(AppUser user, Pageable pageable) {
         return this.taskRepository.findByAssignedTo(user, pageable);
@@ -45,7 +41,7 @@ public class TaskServiceImpl implements TaskService {
         var task = taskRepository.findById(taskId);
 
         if (task.isPresent()) {
-            if (isUserAuthorized(user, task.get())) {
+            if (ACLTask.isUserAuthorized(user, task.get())) {
                 return task;
             }
 
@@ -59,7 +55,7 @@ public class TaskServiceImpl implements TaskService {
         var foundTask = taskRepository.findById(taskId);
 
         if (foundTask.isPresent()) {
-            if (isUserAuthorized(user, foundTask.get())) {
+            if (ACLTask.isUserAuthorized(user, foundTask.get())) {
                 foundTask.get().setDescription(task.getDescription());
 
                 if (!task.getAssignedTo().isEmpty()) {
@@ -82,7 +78,7 @@ public class TaskServiceImpl implements TaskService {
 
         if (foundTask.isPresent()) {
 
-            if (isUserAuthorized(user, foundTask.get())) {
+            if (ACLTask.isUserAuthorized(user, foundTask.get())) {
                 foundTask.get().setState(TaskState.FINISHED);
                 var finishedTask = taskRepository.save(foundTask.get());
 
@@ -100,7 +96,7 @@ public class TaskServiceImpl implements TaskService {
 
         if (task.isPresent()) {
 
-            if (isUserAuthorized(user, task.get())) {
+            if (ACLTask.isUserAuthorized(user, task.get())) {
                 taskRepository.deleteById(taskId);
                 return Optional.of(true);
             }
