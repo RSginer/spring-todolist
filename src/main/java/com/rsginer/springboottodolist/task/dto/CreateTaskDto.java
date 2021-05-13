@@ -11,8 +11,7 @@ import java.util.UUID;
 @Schema(name = "CreateTask")
 public class CreateTaskDto {
 
-    @NotBlank(message = "Description is required")
-    private String description;
+    private String description = "";
 
     private List<UUID> assignedTo;
 
