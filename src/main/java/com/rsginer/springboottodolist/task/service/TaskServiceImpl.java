@@ -50,7 +50,9 @@ public class TaskServiceImpl implements TaskService {
 
         if (foundTask.isPresent() && ACLTask.isUserAuthorized(user, foundTask.get())) {
             foundTask.get().setDescription(task.getDescription());
-
+            if (task.getState() != null) {
+                foundTask.get().setState(task.getState());
+            }
             if (!task.getAssignedTo().isEmpty()) {
                 foundTask.get().setAssignedTo(task.getAssignedTo());
             }

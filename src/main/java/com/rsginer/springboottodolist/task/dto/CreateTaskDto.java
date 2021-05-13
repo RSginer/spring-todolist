@@ -1,6 +1,7 @@
 package com.rsginer.springboottodolist.task.dto;
 
 
+import com.rsginer.springboottodolist.task.domain.TaskState;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotBlank;
@@ -14,6 +15,16 @@ public class CreateTaskDto {
     private String description;
 
     private List<UUID> assignedTo;
+
+    private TaskState state;
+
+    public TaskState getState() {
+        return state;
+    }
+
+    public void setState(TaskState state) {
+        this.state = state;
+    }
 
     public String getDescription() {
         return description;

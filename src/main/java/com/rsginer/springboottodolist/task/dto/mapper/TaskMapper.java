@@ -19,6 +19,10 @@ public class TaskMapper {
             task.setAssignedTo(assignedTo);
         }
 
+        if (createTaskDto.getState() != null) {
+            task.setState(createTaskDto.getState());
+        }
+
         return task;
     }
 }
