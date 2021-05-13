@@ -1,5 +1,6 @@
 package com.rsginer.springboottodolist.task.service;
 
+import com.rsginer.springboottodolist.task.domain.ACLTask;
 import com.rsginer.springboottodolist.task.domain.Task;
 import com.rsginer.springboottodolist.task.api.TaskNotCreatedByAndNotAssignedToForbiddenException;
 import com.rsginer.springboottodolist.task.domain.TaskState;
@@ -219,6 +220,43 @@ public class TaskServiceImplTests {
         taskService.getById(hacker, mockTask.getId());
 
         verify(taskRepository).findById(mockTask.getId());
+    }
+
+    @Test(expected = TaskNotCreatedByAndNotAssignedToForbiddenException.class)
+    public void shouldThrowForbiddenDeleteTaskById() throws TaskNotCreatedByAndNotAssignedToForbiddenException {
+        var hacker = new AppUser();
+        hacker.setUsername("Hacker");
+        hacker.setPassword("Hacker");
+        hacker.setFirstName("Hacker");
+        hacker.setLastName("Hacker");
+
+        when(taskRepository.findById(any(UUID.class)))
+                .thenReturn(Optional.of(mockTask));
+
+        taskService.deleteTaskById(hacker, mockTask.getId());
+
+        verify(taskRepository).findById(mockTask.getId());
+    }
+
+    @Test
+    public void shouldDeleteTaskById() throws TaskNotCreatedByAndNotAssignedToForbiddenException {
+        when(taskRepository.findById(any(UUID.class))).thenReturn(Optional.of(mockTask));
+
+        var result = taskService.deleteTaskById(mockUser, mockTask.getId());
+        verify(taskRepository).findById(mockTask.getId());
+        verify(taskRepository).deleteById(mockTask.getId());
+        assertThat(result).isPresent();
+        assertThat(result.get()).isTrue();
+    }
+
+    @Test
+    public void shouldReturnEmptyDeleteTaskById() throws TaskNotCreatedByAndNotAssignedToForbiddenException {
+        when(taskRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+
+        var result = taskService.deleteTaskById(mockUser, mockTask.getId());
+
+        verify(taskRepository).findById(mockTask.getId());
+        assertThat(result).isEmpty();
     }
 
 }
