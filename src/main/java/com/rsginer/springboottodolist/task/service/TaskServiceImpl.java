@@ -49,7 +49,9 @@ public class TaskServiceImpl implements TaskService {
         var foundTask = taskRepository.findById(taskId);
 
         if (foundTask.isPresent() && ACLTask.isUserAuthorized(user, foundTask.get())) {
-            foundTask.get().setDescription(task.getDescription());
+            if (!task.getDescription().equals("")) {
+                foundTask.get().setDescription(task.getDescription());
+            }
             if (task.getState() != null) {
                 foundTask.get().setState(task.getState());
             }
