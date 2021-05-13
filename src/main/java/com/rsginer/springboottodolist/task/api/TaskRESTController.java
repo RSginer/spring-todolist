@@ -83,4 +83,11 @@ public class TaskRESTController {
         var task = new TaskMapper().toEntity(createTask, appUserDetails.getUser());
         return this.taskService.createTask(appUserDetails.getUser(), task).toDto();
     }
+
+    @DeleteMapping("/{taskId}")
+    @ResponseBody
+    @Operation(security = @SecurityRequirement(name="basicAuth"), description = "Delete a task")
+    public boolean deleteTaskById(@PathVariable @Parameter UUID taskId, @AuthenticationPrincipal @Parameter(hidden = true) AppUserDetails appUserDetails) throws TaskNotCreatedByAndNotAssignedToForbiddenException, TaskNotFoundException {
+        return taskService.deleteTaskById(appUserDetails.getUser(), taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
+    }
 }

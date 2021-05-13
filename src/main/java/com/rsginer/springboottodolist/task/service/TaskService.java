@@ -15,4 +15,5 @@ public interface TaskService {
     Optional<Task> getById(AppUser user, UUID taskId) throws TaskNotCreatedByAndNotAssignedToForbiddenException;
     Optional<Task> updateById(AppUser user, UUID taskId, Task task) throws TaskNotCreatedByAndNotAssignedToForbiddenException;
     Optional<Task> finishById(AppUser user, UUID taskId) throws TaskNotCreatedByAndNotAssignedToForbiddenException;
+    Optional<Boolean> deleteTaskById(AppUser user, UUID taskId) throws TaskNotCreatedByAndNotAssignedToForbiddenException;
 }

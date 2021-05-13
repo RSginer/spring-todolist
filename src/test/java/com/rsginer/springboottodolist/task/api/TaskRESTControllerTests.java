@@ -193,6 +193,72 @@ public class TaskRESTControllerTests extends MockSecurityRESTController {
     }
 
     @Test
+    @WithMockAppUser
+    public void shouldReturnForbiddenFinishById() throws Exception {
+        var task = new Task();
+        task.setDescription("Test");
+        when(taskService.finishById(any(AppUser.class), any(UUID.class)))
+                .thenThrow(new TaskNotCreatedByAndNotAssignedToForbiddenException(task.getId()));
+
+        this.mockMvc.perform(patch("/api/tasks/" + task.getId() + "/finish"))
+                .andDo(print())
+                .andExpect(status()
+                        .isForbidden());
+    }
+
+    @Test
+    @WithMockAppUser
+    public void shouldReturnForbiddenUpdateTaskById() throws Exception {
+        var task = new Task();
+        task.setDescription("Test");
+        when(taskService.updateById(any(AppUser.class), any(UUID.class), any(Task.class)))
+                .thenThrow(new TaskNotCreatedByAndNotAssignedToForbiddenException(task.getId()));
+        var createTaskDto = new CreateTaskDto();
+        createTaskDto.setDescription(task.getDescription());
+
+        this.mockMvc.perform(put("/api/tasks/" + task.getId())
+                .content(objectMapper.writeValueAsString(createTaskDto)).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status()
+                        .isForbidden());
+    }
+
+    @Test
+    @WithMockAppUser
+    public void shouldReturnForbiddenGetTaskById() throws Exception {
+        var task = new Task();
+        when(taskService.getById(any(AppUser.class), eq(task.getId())))
+                .thenThrow(new TaskNotCreatedByAndNotAssignedToForbiddenException(task.getId()));
+
+        this.mockMvc.perform(get("/api/tasks/" + task.getId()))
+                .andDo(print())
+                .andExpect(status()
+                        .isForbidden());
+    }
+
+    @Test
+    @WithMockAppUser
+    public void shouldReturnForbiddenDeleteATask() throws Exception {
+        var task = new Task();
+        when(taskService.deleteTaskById(any(AppUser.class), eq(task.getId())))
+                .thenThrow(new TaskNotCreatedByAndNotAssignedToForbiddenException(task.getId()));
+
+        this.mockMvc.perform(delete("/api/tasks/" + task.getId()))
+                .andDo(print())
+                .andExpect(status()
+                        .isForbidden());
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedDeleteATaskWithoutCredentials() throws Exception {
+        var task = new Task();
+        this.mockMvc.perform(delete("/api/tasks/" + task.getId()))
+                .andDo(print())
+                .andExpect(status()
+                        .isUnauthorized());
+    }
+
+    @Test
     public void shouldReturnUnauthorizedGettingTaskWithoutCredentials() throws Exception {
         this.mockMvc.perform(get("/api/tasks"))
                 .andDo(print())

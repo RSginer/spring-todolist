@@ -93,6 +93,21 @@ public class TaskServiceImpl implements TaskService {
         }
 
         return Optional.empty();
+    }
 
+    public Optional<Boolean> deleteTaskById(AppUser user, UUID taskId) throws TaskNotCreatedByAndNotAssignedToForbiddenException {
+        var task = taskRepository.findById(taskId);
+
+        if (task.isPresent()) {
+
+            if (isUserAthorized(user, task.get())) {
+                taskRepository.deleteById(taskId);
+                return Optional.of(true);
+            }
+
+            throw new TaskNotCreatedByAndNotAssignedToForbiddenException(taskId);
+        }
+
+        return Optional.of(false);
     }
 }
